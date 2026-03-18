@@ -1,0 +1,481 @@
+/* =========================================
+   Reset & Base Typography
+========================================= */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Assistant', sans-serif;
+    color: #2c1e16;
+    height: 100vh;
+    overflow: hidden;
+    background: #fdfaf6;
+}
+
+h1, h2, h3 {
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.subtitle {
+    font-size: 1rem;
+    color: #795d43;
+    margin-bottom: 1.5rem;
+}
+
+/* =========================================
+   Layout
+========================================= */
+.app-container {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+}
+
+.sidebar {
+    width: 380px;
+    background: #fffdf9;
+    box-shadow: -4px 0 20px rgba(0,0,0,0.2);
+    z-index: 2000;
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem;
+    overflow-y: auto;
+    border-left: 2px solid #e2d1bc;
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100vh;
+}
+
+.map-container {
+    flex-grow: 1;
+    position: relative;
+    width: 100%;
+    height: 100vh;
+}
+
+#map {
+    width: 100%;
+    height: 100%; /* Explicit full viewport height so Leaflet renders */
+    z-index: 1;
+    background: #f4f1ea !important; /* Paper/Sand color for when tiles are loading/missing */
+    filter: sepia(10%) contrast(105%) brightness(98%); /* Subtle biblical effect */
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 380px; /* Leave room for sidebar */
+}
+
+/* Base styling (No sepia) */
+.leaflet-container {
+    font-family: 'Assistant', sans-serif;
+}
+
+/* =========================================
+   UI Components
+========================================= */
+.mode-tabs {
+    display: flex;
+    margin-bottom: 1.5rem;
+    background: #e9e0d1;
+    border-radius: 8px;
+    padding: 4px;
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 0.6rem;
+    border: none;
+    background: transparent;
+    font-family: inherit;
+    font-weight: 600;
+    color: #6b5239;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: all 0.2s;
+    font-size: 1.05rem;
+}
+
+.tab-btn.active {
+    background: #fff;
+    color: #8e44ad; /* Royal purple accent */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.panel {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.panel.hidden {
+    display: none;
+}
+
+.map-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.map-btn {
+    padding: 0.8rem;
+    text-align: right;
+    background: #ffffff;
+    border: 1px solid #e2d1bc;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 1rem;
+    color: #4a3825;
+    transition: all 0.2s;
+}
+
+.map-btn:hover {
+    background: #fcf9f2;
+    border-color: #c9a982;
+    transform: translateX(-3px);
+}
+
+.map-btn.active {
+    background: #6d4c41; /* Deep brown */
+    color: #fff;
+    border-color: #5d4037;
+    font-weight: bold;
+}
+
+.primary-btn, .action-btn {
+    padding: 0.8rem;
+    background: #8e44ad;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-family: inherit;
+    font-weight: bold;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+    width: 100%;
+    margin-bottom: 1rem;
+    box-shadow: 0 4px 6px rgba(142,68,173,0.2);
+}
+
+.primary-btn:hover, .action-btn:hover {
+    background: #732d91;
+}
+
+.action-btn {
+    background: #27ae60;
+    box-shadow: 0 4px 6px rgba(39,174,96,0.2);
+}
+
+.action-btn:hover {
+    background: #219653;
+}
+
+/* Practice Game Area */
+.instruction {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    color: #4a3825;
+}
+
+.term-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    margin-bottom: 1.5rem;
+}
+
+.term-item {
+    display: flex;
+    align-items: center;
+    background: #fff;
+    padding: 0.6rem 1rem;
+    border-radius: 6px;
+    border: 1px solid #dcd1c4;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.term-name {
+    flex-grow: 1;
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.term-select {
+    padding: 0.4rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 1rem;
+    background-color: #fcf9f2;
+    cursor: pointer;
+}
+
+.feedback-area {
+    margin-bottom: 1rem;
+    font-weight: bold;
+    text-align: center;
+    padding: 0.8rem;
+    border-radius: 6px;
+    display: none;
+}
+
+.feedback-area.success {
+    display: block;
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.feedback-area.error {
+    display: block;
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* =========================================
+   Leaflet Custom Elements
+========================================= */
+
+/* Map Title */
+.map-title-overlay {
+    position: absolute;
+    top: 2rem;
+    left: 2rem; /* Map is positioned RTL, so the map is left, sidebar is right */
+    background: rgba(255, 252, 245, 0.9);
+    padding: 0.8rem 1.5rem;
+    border-radius: 8px;
+    border: 2px solid #e2d1bc;
+    font-family: 'Frank Ruhl Libre', serif;
+    font-size: 1.8rem;
+    font-weight: 900;
+    color: #4a3825;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    pointer-events: none;
+    z-index: 1000;
+}
+
+/* Custom Marker - Cities */
+.custom-city-marker {
+    background: transparent;
+    border: none;
+    display: flex;
+    align-items: center;
+}
+.city-dot {
+    width: 8px;
+    height: 8px;
+    background-color: black;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+.city-text {
+    font-family: 'Assistant', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: black;
+    margin-right: 6px;
+    text-shadow: 
+        -1px -1px 0 #fff,  
+         1px -1px 0 #fff,
+        -1px  1px 0 #fff,
+         1px  1px 0 #fff;
+    white-space: nowrap;
+}
+.custom-city-marker:hover .city-dot {
+    transform: scale(1.5);
+    background-color: #d35400;
+}
+
+.custom-city-marker.faded {
+    opacity: 0.6;
+}
+.custom-city-marker.faded .city-dot {
+    background-color: #7f8c8d;
+}
+
+/* Custom Marker - Empires / Regions */
+.custom-region-marker {
+    background: transparent;
+    border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+.region-text {
+    font-family: 'Frank Ruhl Libre', serif;
+    font-weight: 900;
+    color: black;
+    text-shadow: 
+        -1px -1px 0 rgba(255,255,255,0.8),  
+         1px -1px 0 rgba(255,255,255,0.8),
+        -1px  1px 0 rgba(255,255,255,0.8),
+         1px  1px 0 rgba(255,255,255,0.8);
+}
+.region-text.large {
+    font-size: 32px;
+    letter-spacing: 2px;
+}
+.region-text.xlarge {
+    font-size: 48px;
+    letter-spacing: 3px;
+    opacity: 0.7;
+}
+.region-text.medium {
+    font-size: 22px;
+}
+.region-text.small {
+    font-size: 16px;
+    font-weight: 800;
+}
+.italic-label {
+    font-style: italic;
+    opacity: 0.8;
+}
+.custom-region-marker, .custom-city-marker.faded, .custom-icon-marker {
+    pointer-events: none !important;
+}
+.custom-city-marker.editor-active {
+    pointer-events: auto !important;
+}
+
+/* Icons */
+.custom-icon-marker {
+    font-size: 35px;
+    text-align: center;
+    text-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+.icon-label {
+    font-family: 'Assistant', sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    text-shadow: 1px 1px 2px black;
+    white-space: nowrap;
+    margin-left: -50%;
+}
+
+/* River labels */
+.custom-river-label {
+    background: transparent;
+    border: none;
+}
+.river-label-text {
+    font-family: 'Assistant', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: #2980b9;
+    white-space: nowrap;
+    text-shadow:
+        -1px -1px 0 rgba(255,255,255,0.9),
+         1px -1px 0 rgba(255,255,255,0.9),
+        -1px  1px 0 rgba(255,255,255,0.9),
+         1px  1px 0 rgba(255,255,255,0.9);
+    transform: rotate(-30deg);
+    display: inline-block;
+}
+
+/* Practice Game Numbers */
+.practice-marker {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px !important;
+    height: 40px !important;
+    background-color: #3498db;
+    border: 3px solid white;
+    border-radius: 50%;
+    color: white;
+    font-family: 'Assistant', sans-serif;
+    font-size: 24px;
+    font-weight: bold;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+    margin-left: -20px;
+    margin-top: -20px;
+}
+
+/* Arrows text labels */
+.arrow-text {
+    background: rgba(255, 252, 245, 0.9);
+    padding: 2px 8px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    font-weight: bold;
+    font-size: 14px;
+    color: #333;
+    white-space: nowrap;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+/* Map Editor Styles */
+#editor-panel {
+    padding-top: 1rem;
+}
+.editor-log {
+    margin-top: 1.5rem;
+}
+.editor-log textarea {
+    width: 100%;
+    height: 150px;
+    background: #2d3436;
+    color: #fab1a0;
+    font-family: monospace;
+    padding: 0.8rem;
+    border-radius: 8px;
+    border: none;
+    font-size: 13px;
+    direction: ltr;
+    margin-top: 0.2rem;
+}
+.log-group {
+    background: #fdfdfd;
+    padding: 10px;
+    border: 1px solid #eee;
+    border-radius: 8px;
+}
+.mini-btn {
+    background: #636e72;
+    color: white;
+    border: none;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    cursor: pointer;
+    margin-top: 5px;
+}
+.mini-btn:hover { background: #2d3436; }
+.coord-display {
+    background: #f1f2f6;
+    padding: 0.8rem;
+    border-radius: 6px;
+    margin: 1rem 0;
+    text-align: center;
+}
+#last-coord {
+    font-weight: bold;
+    color: #e67e22;
+    display: block;
+    margin-top: 5px;
+}
+.editor-instructions {
+    margin-top: 1rem;
+    color: #636e72;
+    line-height: 1.4;
+}
+.editor-controls {
+    display: flex;
+    gap: 10px;
+}
