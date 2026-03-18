@@ -108,7 +108,14 @@ function renderMapList() {
         const btn = document.createElement('button');
         btn.className = 'map-btn';
         btn.textContent = m.title;
-        btn.onclick = () => { loadMap(m.id); if (currentMode === 'editor') syncEditorWithCurrentMap(true); };
+        btn.onclick = () => { 
+            loadMap(m.id); 
+            if (currentMode === 'editor') syncEditorWithCurrentMap(true);
+            if (window.innerWidth <= 768) {
+                const sb = document.getElementById('sidebar');
+                if (sb) sb.classList.add('collapsed');
+            }
+        };
         ui.mapList.appendChild(btn);
     });
 }
