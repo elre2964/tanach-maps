@@ -16,7 +16,10 @@
 <body>
     <div class="app-container">
         <!-- Sidebar -->
-        <aside class="sidebar">
+        <aside class="sidebar" id="sidebar">
+            <button class="toggle-sidebar" id="toggle-sidebar" onclick="toggleSidebar()">
+                <span class="arrow">▼</span>
+            </button>
             <header>
                 <h1>תרגול מפות - מלכים</h1>
                 <p class="subtitle">על גבי מפה תלת-ממדית אינטראקטיבית</p>
@@ -134,6 +137,11 @@
     <!-- Arc.js for curved lines -->
     <script src="https://api.mapbox.com/mapbox.js/plugins/arc.js/v0.1.0/arc.js"></script>
     
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('collapsed');
+        }
+    </script>
     <!-- Application Logic -->
     <script src="data.js"></script>
     <script src="app.js"></script>
