@@ -12,6 +12,7 @@ let editorPlaces = {};
 let activePolyId = null;
 let activeRiverId = null;
 let activeLayerType = 'polygon';
+const SHOW_EDITOR = false; // Set to true to enable the editor tab again
 
 const ui = {};
 
@@ -99,6 +100,13 @@ function init() {
     renderMapList();
     loadMap(0); // Load General Map by default
     initMobileSidebar();
+    
+    // Hide editor tab if disabled
+    if (!SHOW_EDITOR) {
+        const editorTab = Array.from(document.querySelectorAll('.tab-btn')).find(b => b.innerText.includes('עורך'));
+        if (editorTab) editorTab.style.display = 'none';
+    }
+    
     setTimeout(() => { map.invalidateSize(); }, 500);
 }
 
@@ -199,6 +207,8 @@ function renderMapList() {
 }
 
 function switchMode(mode) {
+    if (mode === 'editor' && !SHOW_EDITOR) return;
+
     currentMode = mode;
     document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.classList.remove('active');
@@ -757,8 +767,10 @@ function drawArrow(f) {
 }
 
 function startPracticeSession() {
+    ui.panelPractice.classList.remove('hidden');
     ui.practiceArea.classList.remove('hidden');
     ui.feedback.textContent = '';
+    ui.feedback.className = 'feedback-area';
     
     // Clear map and set global view
     mapLayers.clearLayers();
@@ -772,12 +784,16 @@ function startPracticeSession() {
     }
     map.flyToBounds(israelBounds, options);
     ui.mapTitle.textContent = "תרגול זיהוי מקומות (רנדומלי)";
-    ui.btnCheck.textContent = "בדוק תשובות";
+    
+    // Prepare buttons
+    ui.btnCheck.innerHTML = "בדוק תשובות";
+    ui.btnCheck.className = "action-btn primary-btn";
+    ui.btnCheck.style.background = ""; // Reset custom success background
     ui.btnCheck.onclick = checkPracticeAnswers;
 
     const allPlaces = [...MAP_DATA.practiceList];
     const selected = [];
-    const MIN_DIST = 0.35; // Minimum distance in degrees (~40km)
+    const MIN_DIST = 0.55; // Increased minimum distance (~60km)
 
     // Selection logic with distance constraint
     let attempts = 0;
@@ -829,7 +845,7 @@ function startPracticeSession() {
         item.className = 'term-item';
         
         item.innerHTML = `
-            <span class="term-name">${name}</span>
+            <span class="term-name">${name} <span class="mark"></span></span>
             <div class="number-selector">
                 <button type="button" class="num-btn" data-val="1">1</button>
                 <button type="button" class="num-btn" data-val="2">2</button>
@@ -846,6 +862,9 @@ function startPracticeSession() {
                 btns.forEach(btn => btn.classList.remove('selected'));
                 b.classList.add('selected');
                 input.value = b.dataset.val;
+                // Clear mark when changing answer
+                item.querySelector('.mark').textContent = '';
+                item.classList.remove('correct', 'wrong');
             };
         });
 
@@ -858,21 +877,41 @@ function calculateDistance(p1, p2) {
 }
 
 function checkPracticeAnswers() {
-    const selects = document.querySelectorAll('.term-select');
-    let correct = 0;
-    selects.forEach(s => { if (practiceState.mapping[s.value] === s.dataset.place) correct++; });
+    const items = document.querySelectorAll('.term-item');
+    let correctCount = 0;
     
-    if (correct === selects.length) { 
+    items.forEach(item => {
+        const select = item.querySelector('.term-select');
+        const mark = item.querySelector('.mark');
+        const isCorrect = practiceState.mapping[select.value] === select.dataset.place;
+        
+        if (select.value === "") {
+            mark.textContent = ' ⚠️';
+            item.classList.remove('correct', 'wrong');
+        } else if (isCorrect) {
+            mark.textContent = ' ✅';
+            item.classList.add('correct');
+            item.classList.remove('wrong');
+            correctCount++;
+        } else {
+            mark.textContent = ' ❌';
+            item.classList.add('wrong');
+            item.classList.remove('correct');
+        }
+    });
+    
+    if (correctCount === items.length) { 
         ui.feedback.className = 'feedback-area success'; 
-        ui.feedback.textContent = '🟢 כל הכבוד! הכל נכון.'; 
+        ui.feedback.textContent = '🟢 כל הכבוד! הכל נכון.';
+        ui.btnCheck.innerHTML = "שאלה הבאה ➔";
+        ui.btnCheck.style.background = "#2ecc71";
+        ui.btnCheck.onclick = startPracticeSession;
     } else { 
         ui.feedback.className = 'feedback-area error'; 
-        ui.feedback.textContent = `🔴 טעית ב-${selects.length - correct}.`; 
+        ui.feedback.textContent = `🔴 יש לך טעויות. תקן ונסה שוב!`;
+        ui.btnCheck.innerHTML = "בדוק שוב";
+        ui.btnCheck.onclick = checkPracticeAnswers;
     }
-
-    // Change button to "Next"
-    ui.btnCheck.textContent = "הבא ➔";
-    ui.btnCheck.onclick = startPracticeSession;
 }
 
 function smoothPolygon(p) {

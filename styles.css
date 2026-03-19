@@ -155,29 +155,69 @@ h1, h2, h3 {
     background: #8e44ad;
     color: white;
     border: none;
-    border-radius: 6px;
+    border-radius: 8px;
     font-family: inherit;
-    font-weight: bold;
+    font-weight: 700;
     font-size: 1.1rem;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: all 0.2s;
     width: 100%;
     margin-bottom: 1rem;
-    box-shadow: 0 4px 6px rgba(142,68,173,0.2);
+    box-shadow: 0 4px 6px rgba(109,76,65,0.1);
 }
 
-.primary-btn:hover, .action-btn:hover {
-    background: #732d91;
+.primary-btn:hover {
+    background: #73398c;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
 }
 
 .action-btn {
     background: #27ae60;
-    box-shadow: 0 4px 6px rgba(39,174,96,0.2);
 }
 
 .action-btn:hover {
     background: #219653;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
 }
+
+.back-btn {
+    background: #e2e2e2;
+    border: 1px solid #ccc;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #444;
+    cursor: pointer;
+    margin-bottom: 15px;
+    align-self: flex-start;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.back-btn:hover {
+    background: #d4d4d4;
+}
+
+.term-item.correct {
+    border: 2px solid #2ecc71;
+    background: #f0fff4;
+}
+
+.term-item.wrong {
+    border: 2px solid #e74c3c;
+    background: #fff5f5;
+}
+
+.mark {
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+/* Removed stale selector */
 
 /* Practice Game Area */
 .instruction {
@@ -557,7 +597,7 @@ h1, h2, h3 {
 
 .sidebar-drag-handle {
     width: 100%;
-    height: 40px;
+    height: 45px;
     position: absolute;
     top: 0;
     left: 0;
@@ -569,14 +609,14 @@ h1, h2, h3 {
 .sidebar-drag-handle::after {
     content: '';
     position: absolute;
-    top: 10px;
+    top: 14px;
     left: 50%;
     transform: translateX(-50%);
-    width: 40px;
-    height: 4px;
+    width: 60px;
+    height: 5px;
     background: #e2d1bc;
-    border-radius: 5px;
-    opacity: 0.8;
+    border-radius: 10px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
 }
 
 .sidebar.dragging {
