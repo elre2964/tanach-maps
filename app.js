@@ -98,7 +98,9 @@ function init() {
     });
 
     renderMapList();
-    loadMap(0); // Load General Map by default
+    loadMap(0);
+    map.on('zoomend', updateMapZoomClass);
+    updateMapZoomClass();
     initMobileSidebar();
     
     // Hide editor tab if disabled
@@ -719,10 +721,16 @@ function loadMap(mapId, skipFly = false) {
     if (mapObj.regions) {
         mapObj.regions.forEach(rn => {
             const r = MAP_DATA.regions[rn];
-            if (r) {
-                const icon = L.divIcon({ className: 'custom-region-marker', html: `<div class="region-text ${r[2]}" dir="rtl">${rn}</div>`, iconSize: [250, 60], iconAnchor: [125, 30] });
-                L.marker([r[0], r[1]], { icon, interactive: false }).addTo(mapLayers);
-            }
+            if (!r) return;
+            const size = r[2] || 'small';
+            const isMultiline = rn.includes("בבלית") || rn.includes("ממלכת");
+            const icon = L.divIcon({ 
+                className: 'custom-region-marker', 
+                html: `<div class="region-text ${size} ${isMultiline ? 'multiline' : ''}" dir="rtl">${rn}</div>`, 
+                iconSize: [250, 100], 
+                iconAnchor: [125, 50] 
+            });
+            L.marker([r[0], r[1]], { icon, interactive: false }).addTo(mapLayers);
         });
     }
 
@@ -757,13 +765,14 @@ function loadMap(mapId, skipFly = false) {
 function drawCity(name, faded, offsetClass = "") {
     const coords = editorPlaces[name] || MAP_DATA.places[name];
     if (!coords) return;
+    // Use definitive absolute positioning for maximum accuracy on all browsers
     const icon = L.divIcon({ 
         className: `custom-city-marker ${faded?'faded':''} ${offsetClass}`, 
-        html: `<div class="city-label-wrapper"><div class="city-dot"></div><div class="city-text" dir="rtl">${name}</div></div>`, 
-        iconSize: [1, 1], 
+        html: `<div class="city-dot"></div><div class="city-text" dir="rtl">${name}</div>`, 
+        iconSize: [0, 0], 
         iconAnchor: [0, 0] 
     });
-    const m = L.marker(coords, { icon }).addTo(mapLayers);
+    const m = L.marker(coords, { icon, interactive: false}).addTo(mapLayers);
     m._isMapCity = true;
 }
 
@@ -987,6 +996,16 @@ function smoothRiver(p) {
         cur = next;
     }
     return cur;
+}
+
+function updateMapZoomClass() {
+    const z = map.getZoom();
+    const container = document.getElementById('map');
+    if (!container) return;
+    container.classList.remove('z-low', 'z-mid', 'z-high');
+    if (z <= 6) container.classList.add('z-low');
+    else if (z >= 9) container.classList.add('z-high');
+    else container.classList.add('z-mid');
 }
 
 document.addEventListener('DOMContentLoaded', init);

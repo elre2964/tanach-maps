@@ -36,7 +36,7 @@ h1, h2, h3 {
 }
 
 .sidebar {
-    width: 400px;
+    width: 480px;
     background: #fffdf9;
     box-shadow: -4px 0 20px rgba(0,0,0,0.2);
     z-index: 2000;
@@ -47,6 +47,17 @@ h1, h2, h3 {
     position: relative;
     transition: width 0.4s ease;
     padding: 0; /* Important: remove padding here! */
+}
+
+.panel-practice {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+}
+
+.sidebar.practice-mode header {
+    display: none;
 }
 
 .sidebar-header {
@@ -287,44 +298,9 @@ h1, h2, h3 {
 .region-text.large { font-size: 2.5rem; letter-spacing: 4px; opacity: 0.8; }
 .region-text.huge { font-size: 4rem; letter-spacing: 6px; opacity: 0.6; }
 .region-text.xlarge { font-size: 3.2rem; letter-spacing: 5px; opacity: 0.7; }
+.region-text.multiline { white-space: normal; line-height: 1.1; max-width: 150px; }
 
-.custom-city-marker {
-    background: transparent;
-    border: none;
-}
 
-.city-label-wrapper {
-    position: relative;
-    display: flex;
-    align-items: center;
-    pointer-events: none;
-}
-
-.city-dot {
-    width: 10px;
-    height: 10px;
-    background: #4e342e;
-    border: 2px solid white;
-    border-radius: 50%;
-    box-shadow: 0 0 5px rgba(0,0,0,0.5);
-    flex-shrink: 0;
-}
-
-.city-text {
-    margin-right: 8px; /* Hebrew RTL: text is to the right of the dot */
-    white-space: nowrap;
-    font-weight: 800;
-    font-size: 16px;
-    color: #2c1e16;
-    text-shadow: 2px 2px 4px white, -2px -2px 4px white, 0 0 10px white;
-}
-
-/* Offset classes for close labels */
-.offset-up .city-label-wrapper { flex-direction: column-reverse; }
-.offset-up .city-text { margin-right: 0; margin-bottom: 8px; }
-
-.offset-down .city-label-wrapper { flex-direction: column; }
-.offset-down .city-text { margin-right: 0; margin-top: 8px; }
 
 /* =========================================
    Mobile Bottom Sheet
@@ -436,6 +412,15 @@ h1, h2, h3 {
         font-size: 1.2rem;
         text-align: center;
         padding: 0.8rem;
+    }
+
+    .sidebar.practice-mode header {
+        display: none;
+    }
+    
+    .sidebar.practice-mode .term-list {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
     }
 
     .num-btn {
