@@ -172,6 +172,15 @@ function initMobileSidebar() {
     window.addEventListener('touchend', onTouchEnd);
 }
 
+function sidebarTo40() {
+    const sb = document.getElementById('sidebar');
+    if (!sb) return;
+    const h = window.innerHeight * 0.4;
+    sb.style.height = h + 'px';
+    sb.classList.remove('collapsed');
+    setTimeout(() => { map.invalidateSize(); }, 400);
+}
+
 function toggleSidebar() {
     const sb = document.getElementById('sidebar');
     if (!sb) return;
@@ -196,9 +205,9 @@ function renderMapList() {
             if (currentMode === 'editor') syncEditorWithCurrentMap(true);
             if (window.innerWidth <= 768) {
                 const sb = document.getElementById('sidebar');
-                if (sb) {
-                    sb.style.height = ''; // Reset custom height
-                    sb.classList.add('collapsed');
+                if (sb && sb.classList.contains('collapsed')) {
+                    // Only expand if it was collapsed, but don't close if open
+                    sb.classList.remove('collapsed');
                 }
             }
         };
