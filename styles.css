@@ -46,6 +46,7 @@ h1, h2, h3 {
     border-left: 2px solid #e2d1bc;
     position: relative;
     transition: width 0.4s ease;
+    padding: 0; /* Important: remove padding here! */
 }
 
 .sidebar-header {
@@ -97,6 +98,10 @@ h1, h2, h3 {
     cursor: pointer;
     border-radius: 6px;
     transition: all 0.2s;
+}
+
+.sidebar.practice-mode .mode-tabs {
+    display: none;
 }
 
 .tab-btn.active {
@@ -223,16 +228,25 @@ h1, h2, h3 {
 .feedback-area.error { background: #f8d7da; color: #721c24; }
 
 .back-btn {
-    background: transparent;
+    background: #6d4c41;
     border: none;
-    color: #6d4c41;
+    color: white;
     font-weight: 700;
     cursor: pointer;
-    padding: 0.5rem 0;
-    display: flex;
+    padding: 0.8rem 1.5rem;
+    display: inline-flex;
     align-items: center;
-    gap: 5px;
+    gap: 8px;
     font-size: 1rem;
+    border-radius: 30px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    transition: all 0.3s;
+    margin-bottom: 0.5rem;
+}
+
+.back-btn:hover {
+    background: #5d4037;
+    transform: translateX(-5px);
 }
 
 /* Map Overlays */
