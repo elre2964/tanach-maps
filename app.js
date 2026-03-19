@@ -724,9 +724,13 @@ function loadMap(mapId, skipFly = false) {
             if (!r) return;
             const size = r[2] || 'small';
             const isMultiline = rn.includes("בבלית") || rn.includes("ממלכת");
+            let displayText = rn;
+            if (isMultiline) {
+                displayText = rn.replace("האימפריה ", "האימפריה<br>").replace("ממלכת ", "ממלכת<br>");
+            }
             const icon = L.divIcon({ 
                 className: 'custom-region-marker', 
-                html: `<div class="region-text ${size} ${isMultiline ? 'multiline' : ''}" dir="rtl">${rn}</div>`, 
+                html: `<div class="region-text ${size} ${isMultiline ? 'multiline' : ''}" dir="rtl">${displayText}</div>`, 
                 iconSize: [250, 100], 
                 iconAnchor: [125, 50] 
             });
@@ -752,9 +756,24 @@ function loadMap(mapId, skipFly = false) {
                 if (!coord2) return;
 
                 const dist = calculateDistance(coord1, coord2);
-                if (dist < 0.12) { // Proximity threshold for label overlap
-                    if (coord1[0] > coord2[0]) offsetClass = "offset-up";
-                    else offsetClass = "offset-down";
+                if (dist < 0.15) { // Increased proximity threshold for label overlap
+                    // Vertical overlap logic
+                    if (coord1[0] > coord2[0]) {
+                        offsetClass = "offset-up";
+                    } else if (coord1[0] < coord2[0]) {
+                        offsetClass = "offset-down";
+                    } else {
+                        // Same latitude? Use index order to decide
+                        offsetClass = (i < j) ? "offset-up" : "offset-down";
+                    }
+
+                    // Secondary: Check horizontal proximity for additional offsetting if needed
+                    if (Math.abs(coord1[1] - coord2[1]) < 0.05) {
+                        if (coord1[1] < coord2[1]) {
+                             // This city is to the left of the other
+                             // Since text is on the right, we might need more room or a left offset
+                        }
+                    }
                 }
             });
             drawCity(c1.name, c1.faded, offsetClass);
@@ -1003,8 +1022,8 @@ function updateMapZoomClass() {
     const container = document.getElementById('map');
     if (!container) return;
     container.classList.remove('z-low', 'z-mid', 'z-high');
-    if (z <= 6) container.classList.add('z-low');
-    else if (z >= 9) container.classList.add('z-high');
+    if (z <= 7) container.classList.add('z-low');
+    else if (z >= 10) container.classList.add('z-high');
     else container.classList.add('z-mid');
 }
 

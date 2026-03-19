@@ -36,7 +36,7 @@ h1, h2, h3 {
 }
 
 .sidebar {
-    width: 480px;
+    width: 550px;
     background: #fffdf9;
     box-shadow: -4px 0 20px rgba(0,0,0,0.2);
     z-index: 2000;
@@ -203,7 +203,7 @@ h1, h2, h3 {
 
 .number-selector {
     display: flex;
-    gap: 12px;
+    gap: 8px;
     justify-content: center;
 }
 
@@ -298,7 +298,73 @@ h1, h2, h3 {
 .region-text.large { font-size: 2.5rem; letter-spacing: 4px; opacity: 0.8; }
 .region-text.huge { font-size: 4rem; letter-spacing: 6px; opacity: 0.6; }
 .region-text.xlarge { font-size: 3.2rem; letter-spacing: 5px; opacity: 0.7; }
-.region-text.multiline { white-space: normal; line-height: 1.1; max-width: 150px; }
+.region-text.multiline { 
+    white-space: normal; 
+    line-height: 1.2; 
+    max-width: 180px; 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* =========================================
+   City Markers & Zoom Scaling
+   ========================================= */
+.custom-city-marker {
+    pointer-events: none !important;
+}
+
+.city-dot {
+    width: 8px;
+    height: 8px;
+    background: #5d4037;
+    border: 1.5px solid white;
+    border-radius: 50%;
+    box-shadow: 0 0 4px rgba(0,0,0,0.4);
+    position: absolute;
+    top: -4px;
+    left: -4px;
+}
+
+.city-text {
+    position: absolute;
+    right: 10px; /* Text to the left of the dot for Hebrew RTL */
+    top: 50%;
+    transform: translateY(-50%);
+    white-space: nowrap;
+    font-size: 14px;
+    font-weight: 700;
+    color: #2c1e16;
+    text-shadow: 
+        -1px -1px 0 #fff,  
+         1px -1px 0 #fff,
+        -1px  1px 0 #fff,
+         1px  1px 0 #fff,
+         0 0 5px rgba(255,255,255,0.8);
+    transition: all 0.2s ease;
+}
+
+.offset-up .city-text { transform: translateY(-220%); }
+.offset-down .city-text { transform: translateY(120%); }
+.offset-left .city-text { right: auto; left: 10px; transform: translateY(-50%); }
+
+/* Zoom-based text scaling */
+.z-low .city-text { font-size: 10px; }
+.z-low .region-text.huge { font-size: 2rem; }
+.z-low .region-text.xlarge { font-size: 1.6rem; }
+.z-low .region-text.large { font-size: 1.2rem; }
+.z-low .region-text.medium { font-size: 0.9rem; }
+.z-low .region-text.small { font-size: 0.7rem; }
+
+.z-mid .city-text { font-size: 14px; }
+
+.z-high .city-text { font-size: 18px; }
+.z-high .region-text.huge { font-size: 5rem; }
+.z-high .region-text.xlarge { font-size: 4rem; }
+.z-high .region-text.large { font-size: 3rem; }
+.z-high .region-text.medium { font-size: 2.2rem; }
+.z-high .region-text.small { font-size: 1.5rem; }
 
 
 
@@ -323,6 +389,8 @@ h1, h2, h3 {
         box-shadow: 0 -10px 40px rgba(0,0,0,0.3);
         border: none;
         transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        display: flex;
+        flex-direction: column;
     }
     
     .sidebar-header {
@@ -418,14 +486,46 @@ h1, h2, h3 {
         display: none;
     }
     
+    .sidebar.practice-mode .sidebar-content {
+        padding: 0.8rem;
+        padding-top: 0.5rem;
+    }
+
+    .sidebar.practice-mode .sidebar-content h2,
+    .sidebar.practice-mode .sidebar-content .instruction {
+        display: none;
+    }
+    
     .sidebar.practice-mode .term-list {
         grid-template-columns: 1fr 1fr;
-        gap: 10px;
+        gap: 8px;
+        margin: 0.5rem 0;
+    }
+
+    .term-item {
+        padding: 0.8rem;
+        border-radius: 12px;
+    }
+
+    .term-name {
+        font-size: 1rem;
+        margin-bottom: 0.5rem;
+        text-align: center;
+    }
+
+    .number-selector {
+        gap: 5px;
     }
 
     .num-btn {
-        width: 45px;
-        height: 45px;
-        font-size: 1.1rem;
+        width: 38px;
+        height: 38px;
+        font-size: 1rem;
+    }
+
+    .feedback-area {
+        padding: 0.5rem;
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
     }
 }
