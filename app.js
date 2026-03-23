@@ -121,6 +121,7 @@ function initMobileSidebar() {
     let isDragging = false;
     let startY = 0;
     let startHeight = 0;
+    let rafId = null;
 
     const onTouchStart = (e) => {
         if (window.innerWidth > 768) return;
@@ -137,15 +138,18 @@ function initMobileSidebar() {
 
     const onTouchMove = (e) => {
         if (!isDragging) return;
+        e.preventDefault(); // Prevent page scroll while dragging
         const deltaY = startY - e.touches[0].clientY;
         const newHeight = startHeight + deltaY;
         
-        // Limits
         const maxHeight = window.innerHeight * 0.95;
         const minHeight = 60;
         
         if (newHeight >= minHeight && newHeight <= maxHeight) {
             sidebar.style.height = `${newHeight}px`;
+            // Continuously resize the map so it fills the available space
+            if (rafId) cancelAnimationFrame(rafId);
+            rafId = requestAnimationFrame(() => { map.invalidateSize({ animate: false }); });
         }
     };
 
@@ -155,15 +159,14 @@ function initMobileSidebar() {
         sidebar.classList.remove('dragging');
         
         const currentHeight = sidebar.offsetHeight;
-        // Snap logic: if too short, collapse
         if (currentHeight < 100) {
             sidebar.classList.add('collapsed');
             sidebar.style.height = ''; 
         } else if (currentHeight > window.innerHeight * 0.8) {
-            // Snap to full
             sidebar.style.height = '95vh';
         }
-        setTimeout(() => map.invalidateSize(), 300);
+        // Final size sync
+        setTimeout(() => map.invalidateSize(), 200);
     };
 
     handle.addEventListener('touchstart', onTouchStart, { passive: true });
@@ -744,11 +747,16 @@ function loadMap(mapId, skipFly = false) {
         if (mapObj.fadedPlaces) mapObj.fadedPlaces.forEach(p => citiesToDraw.push({name: p, faded: true}));
         if (mapObj.places) mapObj.places.forEach(p => citiesToDraw.push({name: p, faded: false}));
         
-        // Basic collision check for labels
+        // Improved collision detection: decide offset direction for each city
+        const COLLISION_DIST = 0.18;
+        const offsetMap = {}; // name -> offsetClass
+
         citiesToDraw.forEach((c1, i) => {
-            let offsetClass = "";
             const coord1 = editorPlaces[c1.name] || MAP_DATA.places[c1.name];
             if (!coord1) return;
+
+            let bestOffset = '';
+            let hasConflict = false;
 
             citiesToDraw.forEach((c2, j) => {
                 if (i === j) return;
@@ -756,20 +764,34 @@ function loadMap(mapId, skipFly = false) {
                 if (!coord2) return;
 
                 const dist = calculateDistance(coord1, coord2);
-                if (dist < 0.20) { // Increased threshold for label overlap
-                    // Vertical overlap logic
-                    if (Math.abs(coord1[0] - coord2[0]) > 0.01) {
-                        if (coord1[0] > coord2[0]) offsetClass = "offset-up";
-                        else offsetClass = "offset-down";
+                if (dist < COLLISION_DIST) {
+                    hasConflict = true;
+                    const latDiff = coord1[0] - coord2[0];
+                    const lngDiff = coord1[1] - coord2[1];
+
+                    if (Math.abs(latDiff) >= Math.abs(lngDiff)) {
+                        // Primarily vertically separated
+                        bestOffset = (latDiff > 0) ? 'offset-up' : 'offset-down';
                     } else {
-                        // Very close in latitude? Use index to force one up one down
-                        offsetClass = (i < j) ? "offset-up" : "offset-down";
+                        // Primarily horizontally separated — use lat index as tiebreaker
+                        bestOffset = (i < j) ? 'offset-up' : 'offset-down';
                     }
                 }
             });
-            drawCity(c1.name, c1.faded, offsetClass);
+
+            offsetMap[c1.name] = hasConflict ? bestOffset : '';
+        });
+
+        citiesToDraw.forEach(c => {
+            drawCity(c.name, c.faded, offsetMap[c.name] || '');
         });
     }
+
+    // Render context panel for this map
+    renderMapContext(mapObj);
+
+    // Force map to recalculate its size after loading (fixes layer lag bug)
+    setTimeout(() => { map.invalidateSize({ animate: false }); }, 50);
 }
 
 function drawCity(name, faded, offsetClass = "") {
@@ -1012,10 +1034,289 @@ function updateMapZoomClass() {
     const z = map.getZoom();
     const container = document.getElementById('map');
     if (!container) return;
+
+    // Smooth, continuous font size via CSS custom properties (no delay, no class jump)
+    // City labels: 9px at zoom 6, 13px at zoom 8, 19px at zoom 11+
+    const citySize = Math.max(9, Math.min(19, 9 + (z - 6) * 2));
+    container.style.setProperty('--city-font-size', `${citySize.toFixed(1)}px`);
+
+    // Region labels: scale from 0.65 at zoom 6 to 1.4 at zoom 11
+    const regionScale = Math.max(0.55, Math.min(1.45, 0.55 + (z - 6) * 0.18));
+    container.style.setProperty('--region-scale', regionScale.toFixed(3));
+
+    // Keep legacy class for any remaining class-based rules
     container.classList.remove('z-low', 'z-mid', 'z-high');
     if (z <= 7) container.classList.add('z-low');
     else if (z >= 10) container.classList.add('z-high');
     else container.classList.add('z-mid');
+}
+
+// =========================================
+// Per-map context panel
+// =========================================
+const MAP_CONTEXTS = {
+    0: null, // general map, no context
+    1: {
+        color: '#795548',
+        emoji: '👑',
+        title: 'תחום השליטה של ממלכת שלמה',
+        chapters: ['מלכים א ה\' א–ה', 'מלכים א ח\' סה'],
+        summary: 'ממלכת שלמה הגיעה לשיא גדולתה, משתרעת מנהר פרת בצפון-מזרח ועד נחל מצרים בדרום-מערב. כל ממלכות עבר הנהר המערבי שילמו מנחה לשלמה. יש להבדיל בין גבולות ההתיישבות ("מדן ועד באר שבע") לבין גבולות השליטה הרחבים יותר.',
+        verses: [
+            { text: 'וּשְׁלֹמֹה הָיָה מֹושֵׁל בְּכָל הַמַּמְלָכוֹת מִן הַנָּהָר אֶרֶץ פְּלִשְׁתִּים וְעַד גְּבוּל מִצְרָיִם', ref: 'מלכים א ה\', א' },
+            { text: 'כִּי הוּא רֹדֶה בְּכָל עֵבֶר הַנָּהָר מִתִּפְסַח וְעַד עַזָּה', ref: 'מלכים א ה\', ד' },
+            { text: 'וַיֵּשֶׁב יְהוּדָה וְיִשְׂרָאֵל לָבֶטַח אִישׁ תַּחַת גַּפְנוֹ וְתַחַת תְּאֵנָתוֹ מִדָּן וְעַד בְּאֵר שָׁבַע כֹּל יְמֵי שְׁלֹמֹה', ref: 'מלכים א ה\', ה' }
+        ]
+    },
+    2: {
+        color: '#e67e22',
+        emoji: '🏙️',
+        title: 'ערים שבנה שלמה על דרך הים',
+        chapters: ['מלכים א ט\' טו–יז'],
+        summary: 'שלמה בנה שלוש ערים מרכזיות — חצור, מגידו וגזר — על ציר דרך הים, הדרך הבינלאומית שחיברה מצרים עם מסופוטמיה. גזר ניתנה לשלמה כנדוניה ממלך מצרים עם נישואיו לבת פרעה.',
+        verses: [
+            { text: 'וְזֶה דְבַר הַמַּס אֲשֶׁר הֶעֱלָה הַמֶּלֶךְ שְׁלֹמֹה... אֶת חָצֹר וְאֶת מְגִדֹּו וְאֶת גָּזֶר', ref: 'מלכים א ט\', טו' },
+            { text: 'פַּרְעֹה מֶלֶךְ מִצְרַיִם עָלָה וַיִּלְכֹּד אֶת גֶּזֶר וַיִּתְּנָהּ שִׁלֻּחִים לְבִתּוֹ אֵשֶׁת שְׁלֹמֹה', ref: 'מלכים א ט\', טז' }
+        ]
+    },
+    3: {
+        color: '#27ae60',
+        emoji: '🐎',
+        title: 'קשרי המסחר של שלמה',
+        chapters: ['מלכים א ג\' א', 'מלכים א י\' כח–כט', 'מלכים א י"א א–ב'],
+        summary: 'שלמה שלט בדרכי המסחר הבינלאומיות ועסק במסחר סוסים בין מצרים לארם והחתים. הקשרים עם מצרים כללו גם נישואין לבת פרעה — ברית שחיזקה את הגבול הדרומי אך גם עוררה ביקורת מצד הכתוב.',
+        verses: [
+            { text: 'וַיִּתְחַתֵּן שְׁלֹמֹה אֶת פַּרְעֹה מֶלֶךְ מִצְרַיִם וַיִּקַּח אֶת בַּת פַּרְעֹה', ref: 'מלכים א ג\', א' },
+            { text: 'וְהַמֶּלֶךְ שְׁלֹמֹה אָהַב נָשִׁים נָכְרִיּוֹת רַבּוֹת וְאֶת בַּת פַּרְעֹה', ref: 'מלכים א י"א, א' }
+        ]
+    },
+    4: {
+        color: '#8e44ad',
+        emoji: '⚖️',
+        title: 'המלכת רחבעם ופילוג הממלכה',
+        chapters: ['מלכים א י"ב א–טו'],
+        summary: 'לאחר מות שלמה, נדרש רחבעם להמלך בשכם — עיר בנחלת אפרים, לא בירושלים. ירבעם חזר ממצרים והציג את תביעות העם להקלת עול המיסים. במקום לקבל את הדרישה, ענה רחבעם בגסות — ובכך גרם לפילוג הממלכה.',
+        verses: [
+            { text: 'אָבִיךָ הִקְשָׁה אֶת עֻלֵּנוּ וְאַתָּה הָקֵל מֵעֲבֹדַת אָבִיךָ הַקָּשָׁה וּמֵעֻלּוֹ הַכָּבֵד אֲשֶׁר נָתַן עָלֵינוּ וְנַעַבְדֶךָ', ref: 'מלכים א י"ב, ד' }
+        ]
+    },
+    5: {
+        color: '#2980b9',
+        emoji: '🗺️',
+        title: 'ממלכת יהודה וממלכת ישראל',
+        chapters: ['מלכים א י"ב טז–כ'],
+        summary: 'הממלכה המאוחדת התפצלה לשתיים: ממלכת יהודה בדרום (שבטי יהודה, בנימין ושמעון) עם ירושלים ובית המקדש, וממלכת ישראל בצפון (שאר השבטים) בהנהגת ירבעם עם מרכז בשכם. ממלכת ישראל הייתה גדולה יותר אך פגיעה יותר.',
+        verses: [
+            { text: 'מַה לָּנוּ חֵלֶק בְּדָוִד וְלֹא נַחֲלָה בְּבֶן יִשַׁי לְאֹהָלֶיךָ יִשְׂרָאֵל עַתָּה רְאֵה בֵיתְךָ דָּוִד', ref: 'מלכים א י"ב, טז' }
+        ]
+    },
+    6: {
+        color: '#c0392b',
+        emoji: '🐂',
+        title: 'עגלי הזהב בדן ובבית אל',
+        chapters: ['מלכים א י"ב כו–ל'],
+        summary: 'ירבעם חשש שהעם יעלה לירושלים ויחזור לממלכת יהודה. הוא הקים שני עגלי זהב — בדן (גבול צפוני) ובבית אל (גבול דרומי) — וקרא להם "אלהיך ישראל". מעשה זה מזכיר את חטא העגל בספר שמות ומהווה נקודת ציון לחטאי ממלכת ישראל.',
+        verses: [
+            { text: 'רַב לָכֶם מֵעֲלוֹת יְרוּשָׁלָיִם הִנֵּה אֱלֹהֶיךָ יִשְׂרָאֵל אֲשֶׁר הֶעֱלוּךָ מֵאֶרֶץ מִצְרָיִם', ref: 'מלכים א י"ב, כח' },
+            { text: 'וַיָּשֶׂם אֶת הָאֶחָד בְּבֵית אֵל וְאֶת הָאֶחָד נָתַן בְּדָן', ref: 'מלכים א י"ב, כט' }
+        ]
+    },
+    7: {
+        color: '#e67e22',
+        emoji: '⚔️',
+        title: 'השתלטות בן הדד מלך ארם על צפון ישראל',
+        chapters: ['מלכים א ט"ו טז–כא'],
+        summary: 'אסא מלך יהודה, בלחץ בעשא מלך ישראל שבנה את הרמה, פנה לבן הדד מלך ארם לעזרה. בן הדד פגע בערי הצפון של ממלכת ישראל לאורך דרך הים — עיון, דן, אבל בית מעכה — ובאזורי ארץ כנרות ונפתלי.',
+        verses: [
+            { text: 'וַיִּשְׁמַע בֶּן הֲדַד... וַיַּךְ אֶת עִיּוֹן וְאֶת דָּן וְאֵת אָבֵל בֵּית מַעֲכָה וְאֵת כָּל כִּנְרֹת עַל כָּל אֶרֶץ נַפְתָּלִי', ref: 'מלכים א ט"ו, כ' }
+        ]
+    },
+    8: {
+        color: '#16a085',
+        emoji: '🏛️',
+        title: 'ערי הבירה של ממלכת ישראל',
+        chapters: ['מלכים א י"ד–ט"ז'],
+        summary: 'בחמישים שנותיה הראשונות עברה ממלכת ישראל כמה בתי מלוכה וערי בירה: שכם, פנואל, תרצה. בית עמרי היה הבית היציב הראשון, וייסד את שומרון כעיר בירה קבועה.',
+        verses: []
+    },
+    9: {
+        color: '#2980b9',
+        emoji: '🦅',
+        title: 'אליהו בזמן הבצורת',
+        chapters: ['מלכים א י"ז א–טז'],
+        summary: 'אליהו גזר בצורת על הארץ ונאלץ להסתתר מפני אחאב ואיזבל. ה׳ שלח אותו לנחל כרית שבעבר הירדן, שם ניזון בנס מהעורבים. לאחר שיבש הנחל, נשלח צפונה לצרפת שליד צידון, שם בצע נס כד הקמח.',
+        verses: [
+            { text: 'לֵךְ מִזֶּה וּפָנִיתָ לְּךָ קֵדְמָה וְנִסְתַּרְתָּ בְּנַחַל כְּרִית אֲשֶׁר עַל פְּנֵי הַיַּרְדֵּן', ref: 'מלכים א י"ז, ג' },
+            { text: 'קוּם לֵךְ צָרְפַתָה אֲשֶׁר לְצִידוֹן וְיָשַׁבְתָּ שָּׁם', ref: 'מלכים א י"ז, ט' }
+        ]
+    },
+    10: {
+        color: '#8e44ad',
+        emoji: '🔥',
+        title: 'מעמד הר הכרמל',
+        chapters: ['מלכים א י"ח יט–מ'],
+        summary: 'הר הכרמל — שלוחה ירוקה מרהיבה מצפון-מערב לרכס השומרון — היה הזירה לעימות הגדול בין אליהו לנביאי הבעל. אליהו, לבדו מול 450 נביאים, הוכיח שה׳ הוא האלוהים האמיתי כאשר האש ירדה ואכלה את הקרבן.',
+        verses: [
+            { text: 'עַד מָתַי אַתֶּם פֹּסְחִים עַל שְׁתֵּי הַסְּעִפִּים אִם ה׳ הָאֱלֹהִים לְכוּ אַחֲרָיו', ref: 'מלכים א י"ח, כא' }
+        ]
+    },
+    11: {
+        color: '#795548',
+        emoji: '🚶',
+        title: 'המסע של אליהו בארץ',
+        chapters: ['מלכים א י"ז—י"ט'],
+        summary: 'מאפיין ייחודי של אליהו הנביא: הוא עבר נוכח כל הארץ ולא היה לו מקום קבוע. מוצאו מן הגלעד שבעבר הירדן המזרחי, עבר לנחל כרית, לצרפת בצפון, לכרמל, ליזרעאל, לבאר שבע ולבסוף לחורב — ובסיום פעילותו חצר חזרה לעבר הירדן.',
+        verses: []
+    },
+    12: {
+        color: '#e74c3c',
+        emoji: '🗡️',
+        title: 'ארם בימי יהודה וישראל',
+        chapters: ['מלכים א כ', 'מלכים א כ"ב'],
+        summary: 'ארם שכנה מצפון-מזרח לישראל ושלטה על דרכי המסחר. לפעמים שיתפה פעולה עם ממלכת ישראל נגד יהודה (בימי בעשא ואסא), ולפעמים היו ישראל ויהודה מאוחדות נגד ארם (בימי אחאב ויהושפט). חזאל נמשח למלך ארם בציווי אירהו על ידי ה׳.',
+        verses: []
+    },
+    13: {
+        color: '#c0392b',
+        emoji: '🛡️',
+        title: 'מלחמת יורם ברמות גלעד',
+        chapters: ['מלכים ב ח כח–כט'],
+        summary: 'רמות גלעד — עיר אסטרטגית בגלעד, בגבול בין ישראל לארם — הייתה מחוז מריבה ממושך. יורם מלך ישראל יצא לקרב שם, נפצע, וירד להחלים ביזרעאל — המרכז השלטוני החלופי של בית אחאב, שאפשר לו להישאר קרוב לשדה הקרב.',
+        verses: [
+            { text: 'וַיָּשָׁב הַמֶּלֶךְ יוֹרָם לְהִתְרַפֵּא בְּיִזְרְעֶאל מִן הַמַּכּוֹת', ref: 'מלכים ב ח, כט' }
+        ]
+    },
+    14: {
+        color: '#f39c12',
+        emoji: '🌟',
+        title: 'ממלכות ישראל ויהודה בשיאן',
+        chapters: ['מלכים ב י"ד כא–כה', 'מלכים ב ט"ו א–ז'],
+        summary: 'בתקופה ייחודית: ירבעם השני הרחיב את ממלכת ישראל צפונה, ועזריה (עוזיהו) הרחיב את יהודה דרומה — יחד הגיעו גבולות עם ישראל לממדים הדומים לימי שלמה! שימו לב: גבול ממלכת שלמה מסומן גם הוא במפה, בצבע נפרד.',
+        verses: [
+            { text: 'הוּא הֵשִׁיב אֶת גְּבוּל יִשְׂרָאֵל מִלְּבוֹא חֲמָת עַד יָם הָעֲרָבָה', ref: 'מלכים ב י"ד, כה' }
+        ]
+    },
+    15: {
+        color: '#7f8c8d',
+        emoji: '🏹',
+        title: 'האימפריה האשורית',
+        chapters: ['מלכים ב ט"ו–י"ז'],
+        summary: 'האימפריה האשורית מרכזה במסופוטמיה הצפונית, על שפות נהר החידקל ובירתה נינוה. בשיאה השתרעה על חלק גדול מהמזרח הקדום. האשורים היו הראשונים שנקטו מדיניות של גלות עמים, ולבסוף כבשו את שומרון והגלו את עשרת השבטים.',
+        verses: []
+    },
+    16: {
+        color: '#c0392b',
+        emoji: '🚶',
+        title: 'הגליית תושבים צפוניים ע"י אשור',
+        chapters: ['מלכים ב ט"ו כט'],
+        summary: 'תגלת פלאסר מלך אשור כבש את ערי הצפון של ממלכת ישראל — עיון, אבל בית מעכה, ינוח, קדש, חצור — ואת כל הגליל ואת ארץ נפתלי, והגלה את תושביהם. זו הייתה הגלות הראשונה שפגעה בממלכת ישראל.',
+        verses: [
+            { text: 'בִּימֵי פֶּקַח מֶלֶךְ יִשְׂרָאֵל בָּא תִּגְלַת פִּלְאֶסֶר מֶלֶךְ אַשּׁוּר וַיִּקַּח אֶת עִיּוֹן וְאֶת אָבֵל בֵּית מַעֲכָה ... וְאֶת הַגָּלִילָה', ref: 'מלכים ב ט"ו, כט' }
+        ]
+    },
+    17: {
+        color: '#e74c3c',
+        emoji: '⛓️',
+        title: 'הגליית ממלכת ישראל לאשור',
+        chapters: ['מלכים ב י"ז א–ו'],
+        summary: 'הושע בן אלה, המלך האחרון של ממלכת ישראל, מרד באשור וכרת ברית עם מצרים. שלמנאסר הטיל מצור על שומרון שלוש שנים, ולבסוף כבש וסרגון הגלה את עשרת השבטים — לחלח, לחבור, לגוזן ולערי מדי. השבטים נטמעו בגולה ואבדו.',
+        verses: [
+            { text: 'וַיֶּגֶל אֶת יִשְׂרָאֵל אַשּׁוּרָה וַיֹּשֶׁב אֹתָם בַּחְלַח וּבְחָבֹור נְהַר גּוֹזָן וְעָרֵי מָדָי', ref: 'מלכים ב י"ז, ו' }
+        ]
+    },
+    18: {
+        color: '#2c3e50',
+        emoji: '🌄',
+        title: 'אשור, בבל ומצרים – מותו של יאשיהו במגידו',
+        chapters: ['מלכים ב כ"ג כט–ל'],
+        summary: 'פרעה נכה יצא לסייע לאשור נגד בבל. יאשיהו מלך יהודה ניסה לעצור אותו במגידו על דרך הים — ונהרג. למרות מותו, המהלך ההיסטורי התהפך: בבל ניצחה את הקואליציה של מצרים ואשור, ועלתה כמעצמה שולטת שגורלה יכריע את גורלה של ממלכת יהודה.',
+        verses: [
+            { text: 'בְּיָמָיו עָלָה פַרְעֹה נְכֹה... וַיֵּלֶךְ הַמֶּלֶךְ יֹאשִׁיָּהוּ לִקְרָאתוֹ וַיְמִיתֵהוּ בִּמְגִדֹּו', ref: 'מלכים ב כ"ג, כט' }
+        ]
+    },
+    19: {
+        color: '#2c3e50',
+        emoji: '🌆',
+        title: 'האימפריה הבבלית',
+        chapters: ['מלכים ב כ"ד–כ"ה'],
+        summary: 'בבל ירשה את השליטה מאשור ועלתה כמעצמה הדומיננטית. נבוכדנאצר מלך בבל פלש ליהודה פעמים אחדות, גלה את מלך יהויכין, ולבסוף החריב את ירושלים ואת בית המקדש בשנת 586 לפנה"ס — סיום פרק ממלכת יהודה.',
+        verses: [
+            { text: 'בְּיוֹם הַהוּא כָּבְשָׂה יַד ה׳... וַיִּשְׂרֹף אֶת בֵּית ה׳ וְאֶת בֵּית הַמֶּלֶךְ', ref: 'מלכים ב כ"ה, ט' }
+        ]
+    }
+};
+
+function renderMapContext(mapObj) {
+    // Find or create the context container
+    let container = document.getElementById('map-context-container');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'map-context-container';
+        const explorePanel = document.getElementById('panel-explore');
+        if (explorePanel) explorePanel.appendChild(container);
+    }
+    container.innerHTML = '';
+
+    const ctx = MAP_CONTEXTS[mapObj.id];
+    if (!ctx) return;
+
+    const panel = document.createElement('div');
+    panel.className = 'map-context-panel';
+
+    // Header
+    const header = document.createElement('div');
+    header.className = 'map-context-header';
+    header.style.background = `linear-gradient(135deg, ${ctx.color}dd, ${ctx.color}aa)`;
+    header.innerHTML = `
+        <span style="font-size:1.4rem">${ctx.emoji}</span>
+        <span>${ctx.title}</span>
+        <span class="ctx-arrow">▼</span>
+    `;
+    header.onclick = () => {
+        panel.classList.toggle('collapsed');
+    };
+    panel.appendChild(header);
+
+    // Body
+    const body = document.createElement('div');
+    body.className = 'map-context-body';
+
+    // Chapters
+    if (ctx.chapters && ctx.chapters.length) {
+        const chapDiv = document.createElement('div');
+        chapDiv.className = 'ctx-chapters';
+        ctx.chapters.forEach(ch => {
+            const tag = document.createElement('span');
+            tag.className = 'ctx-chapter-tag';
+            tag.style.background = `${ctx.color}18`;
+            tag.style.color = ctx.color;
+            tag.textContent = '📖 ' + ch;
+            chapDiv.appendChild(tag);
+        });
+        body.appendChild(chapDiv);
+    }
+
+    // Summary
+    if (ctx.summary) {
+        const sum = document.createElement('p');
+        sum.className = 'ctx-summary';
+        sum.textContent = ctx.summary;
+        body.appendChild(sum);
+    }
+
+    // Verses
+    if (ctx.verses && ctx.verses.length) {
+        ctx.verses.forEach(v => {
+            const vEl = document.createElement('div');
+            vEl.className = 'ctx-verse';
+            vEl.style.borderColor = ctx.color;
+            vEl.innerHTML = `"${v.text}"<cite>${v.ref}</cite>`;
+            body.appendChild(vEl);
+        });
+    }
+
+    panel.appendChild(body);
+    container.appendChild(panel);
 }
 
 document.addEventListener('DOMContentLoaded', init);

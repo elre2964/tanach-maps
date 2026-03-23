@@ -42,11 +42,11 @@ h1, h2, h3 {
     z-index: 2000;
     display: flex;
     flex-direction: column;
-    overflow: hidden; /* Main container fixed */
+    overflow: hidden;
     border-left: 2px solid #e2d1bc;
     position: relative;
     transition: width 0.4s ease;
-    padding: 0; /* Important: remove padding here! */
+    padding: 0;
 }
 
 .panel-practice {
@@ -322,77 +322,192 @@ h1, h2, h3 {
     justify-content: center;
     width: 0 !important;
     height: 0 !important;
+    overflow: visible;
 }
 
 .city-dot {
-    width: 8px;
-    height: 8px;
+    width: 7px;
+    height: 7px;
     background: #5d4037;
     border: 1.5px solid white;
     border-radius: 50%;
     box-shadow: 0 0 4px rgba(0,0,0,0.4);
     flex-shrink: 0;
     z-index: 2;
+    position: relative;
 }
 
+/* City label — tightly hugging the dot */
 .city-text {
     position: absolute;
-    bottom: 10px; /* Default: Above the dot */
+    /* Default: label sits just above the dot */
+    bottom: 7px;
     left: 50%;
     transform: translateX(-50%);
     white-space: nowrap;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 700;
     color: #2c1e16;
     text-shadow: 
-        -2px -2px 0 #fff,  
-         2px -2px 0 #fff,
-        -2px  2px 0 #fff,
-         2px  2px 0 #fff,
-         0 0 8px rgba(255,255,255,1);
-    transition: all 0.2s ease;
+        -1px -1px 0 #fff,  
+         1px -1px 0 #fff,
+        -1px  1px 0 #fff,
+         1px  1px 0 #fff,
+         0 0 6px rgba(255,255,255,0.9);
+    line-height: 1;
     z-index: 1;
+    pointer-events: none;
+    /* Smooth transition for zoom-based scaling only */
+    transition: font-size 0.15s ease;
 }
 
+/*
+  Collision offset classes:
+  offset-up  → label goes higher (dot is below the text)
+  offset-down → label goes below the dot
+*/
 .offset-up .city-text { 
-    bottom: 15px; 
+    bottom: 10px;
 }
 .offset-down .city-text { 
     bottom: auto;
-    top: 10px; 
+    top: 7px; 
 }
 /* Side offsets if needed */
 .offset-left .city-text { 
     bottom: auto;
     top: 50%; 
     left: auto;
-    right: 10px; 
+    right: 8px; 
     transform: translateY(-50%);
 }
 .offset-right .city-text { 
     bottom: auto;
     top: 50%; 
-    left: 10px;
+    left: 8px;
     transform: translateY(-50%);
 }
 
-/* Zoom-based text scaling */
-.z-low .city-text { font-size: 10px; }
-.z-low .region-text.huge { font-size: 2rem; }
-.z-low .region-text.xlarge { font-size: 1.6rem; }
-.z-low .region-text.large { font-size: 1.2rem; }
-.z-low .region-text.medium { font-size: 0.9rem; }
-.z-low .region-text.small { font-size: 0.7rem; }
+/* =========================================
+   Smooth Zoom-based text scaling
+   Uses CSS custom property set by JS
+========================================= */
+#map {
+    --city-font-size: 13px;
+    --region-scale: 1;
+}
 
-.z-mid .city-text { font-size: 14px; }
+.city-text {
+    font-size: var(--city-font-size, 13px);
+}
 
-.z-high .city-text { font-size: 18px; }
-.z-high .region-text.huge { font-size: 5rem; }
-.z-high .region-text.xlarge { font-size: 4rem; }
-.z-high .region-text.large { font-size: 3rem; }
-.z-high .region-text.medium { font-size: 2.2rem; }
-.z-high .region-text.small { font-size: 1.5rem; }
+.region-text.small  { font-size: calc(1.2rem * var(--region-scale, 1)); }
+.region-text.medium { font-size: calc(1.8rem * var(--region-scale, 1)); letter-spacing: 2px; }
+.region-text.large  { font-size: calc(2.5rem * var(--region-scale, 1)); letter-spacing: 4px; opacity: 0.8; }
+.region-text.huge   { font-size: calc(4rem   * var(--region-scale, 1)); letter-spacing: 6px; opacity: 0.6; }
+.region-text.xlarge { font-size: calc(3.2rem * var(--region-scale, 1)); letter-spacing: 5px; opacity: 0.7; }
 
+/* Fallback: old class-based zoom scaler (kept for compatibility, can be removed) */
+.z-low .city-text  { --city-font-size: 10px; }
+.z-mid .city-text  { --city-font-size: 13px; }
+.z-high .city-text { --city-font-size: 17px; }
+
+
+/* =========================================
+   Map Context Panel (info below map list)
+========================================= */
+.map-context-panel {
+    margin-top: 1.5rem;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 2px solid #e2d1bc;
+    background: #fffdf9;
+    animation: fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.map-context-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 1rem 1.2rem;
+    font-weight: 800;
+    font-size: 1.05rem;
+    color: #fff;
+    cursor: pointer;
+    user-select: none;
+}
+
+.map-context-header .ctx-arrow {
+    margin-right: auto;
+    transition: transform 0.25s ease;
+    font-size: 0.8rem;
+    opacity: 0.8;
+}
+
+.map-context-panel.collapsed .ctx-arrow {
+    transform: rotate(-90deg);
+}
+
+.map-context-body {
+    padding: 1.2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    background: #fffdf9;
+    border-top: 1px solid #e2d1bc;
+}
+
+.map-context-panel.collapsed .map-context-body {
+    display: none;
+}
+
+.ctx-summary {
+    font-size: 0.97rem;
+    line-height: 1.7;
+    color: #3a2a1a;
+    white-space: pre-line;
+}
+
+.ctx-verse {
+    background: linear-gradient(135deg, rgba(109,76,65,0.07), rgba(161,136,127,0.05));
+    border-right: 4px solid;
+    border-radius: 8px;
+    padding: 0.85rem 1rem;
+    font-family: 'Frank Ruhl Libre', serif;
+    font-size: 1rem;
+    line-height: 1.8;
+    color: #4e342e;
+    direction: rtl;
+}
+
+.ctx-verse cite {
+    display: block;
+    margin-top: 0.4rem;
+    font-size: 0.82rem;
+    font-style: normal;
+    font-weight: 700;
+    opacity: 0.7;
+}
+
+.ctx-chapters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.ctx-chapter-tag {
+    background: rgba(0,0,0,0.06);
+    border-radius: 20px;
+    padding: 3px 10px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #5d4037;
+}
 
 
 /* =========================================
@@ -415,7 +530,7 @@ h1, h2, h3 {
         border-radius: 25px 25px 0 0;
         box-shadow: 0 -10px 40px rgba(0,0,0,0.3);
         border: none;
-        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         display: flex;
         flex-direction: column;
     }
@@ -554,5 +669,9 @@ h1, h2, h3 {
         padding: 0.5rem;
         margin-bottom: 0.5rem;
         font-size: 0.9rem;
+    }
+
+    .map-context-panel {
+        margin-top: 1rem;
     }
 }
