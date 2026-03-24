@@ -137,16 +137,11 @@
 
         <!-- Main Map Area -->
         <main class="map-container">
-            <div id="map-ui-overlay" class="map-title-overlay">בחר מפה כדי להתחיל</div>
-            
-            <!-- New Floating Info Components -->
-            <button id="mobile-info-btn" class="mobile-info-toggle hidden" onclick="toggleInfoPanel()">
-                <span class="info-icon">!</span>
-            </button>
-            <div id="floating-info-panel" class="floating-info hidden">
-                <!-- Info content injected here -->
+            <div id="map-ui-overlay" class="map-title-overlay">
+                <span id="map-title-text">בחר מפה כדי להתחיל</span>
+                <button id="mobile-info-btn" class="mobile-info-btn hidden" onclick="toggleMobileContext()">❕</button>
             </div>
-
+            <div id="floating-context-panel" class="floating-context-container hidden"></div>
             <div id="map" dir="ltr"></div> <!-- Leaflet Map Container MUST be ltr -->
         </main>
     </div>

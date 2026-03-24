@@ -36,7 +36,7 @@ h1, h2, h3 {
 }
 
 .sidebar {
-    width: 350px;
+    width: 550px;
     background: #fffdf9;
     box-shadow: -4px 0 20px rgba(0,0,0,0.2);
     z-index: 2000;
@@ -47,6 +47,21 @@ h1, h2, h3 {
     position: relative;
     transition: width 0.4s ease;
     padding: 0;
+}
+
+.panel-practice {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+}
+
+.sidebar.practice-mode header {
+    display: none;
+}
+
+.sidebar-header {
+    display: none; /* Only mobile */
 }
 
 .sidebar-content {
@@ -62,7 +77,6 @@ h1, h2, h3 {
     position: relative;
     width: 100%;
     height: 100vh;
-    overflow: hidden;
 }
 
 #map {
@@ -97,6 +111,10 @@ h1, h2, h3 {
     transition: all 0.2s;
 }
 
+.sidebar.practice-mode .mode-tabs {
+    display: none;
+}
+
 .tab-btn.active {
     background: #fff;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
@@ -118,39 +136,43 @@ h1, h2, h3 {
 }
 
 .map-btn {
-    padding: 1rem;
+    padding: 1.2rem;
     background: #fdfaf6;
     border: 1px solid #e2d1bc;
-    border-radius: 10px;
+    border-radius: 12px;
     text-align: right;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s;
-    font-size: 1rem;
+    transition: all 0.3s;
+    font-size: 1.1rem;
     color: #5d4037;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
 .map-btn:hover, .map-btn.active {
     background: #6d4c41;
     color: white;
     transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(109,76,65,0.3);
 }
 
 .action-btn {
     width: 100%;
-    padding: 0.8rem;
+    padding: 1rem;
     background: #a1887f;
     color: white;
     border: none;
-    border-radius: 10px;
+    border-radius: 12px;
     font-weight: 700;
     cursor: pointer;
     font-size: 1rem;
     transition: all 0.3s;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
 .action-btn:hover {
     background: #6d4c41;
+    transform: translateY(-2px);
 }
 
 /* Practice Styles */
@@ -165,6 +187,7 @@ h1, h2, h3 {
     padding: 1.2rem;
     border-radius: 16px;
     border: 2px solid #e2d1bc;
+    transition: all 0.3s;
 }
 
 .term-item.correct { border-color: #27ae60; background: #f0fff4; }
@@ -174,7 +197,7 @@ h1, h2, h3 {
     display: block;
     font-size: 1.2rem;
     font-weight: 700;
-    margin-bottom: 0.5rem;
+    margin-bottom: 1rem;
     color: #5d4037;
 }
 
@@ -185,160 +208,113 @@ h1, h2, h3 {
 }
 
 .num-btn {
-    width: 45px;
-    height: 45px;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
     border: 2px solid #e2d1bc;
     background: white;
     font-weight: 700;
+    font-size: 1.2rem;
     cursor: pointer;
+    transition: all 0.2s;
+    color: #6d4c41;
 }
 
 .num-btn.selected {
     background: #6d4c41;
     color: white;
+    border-color: #6d4c41;
+    transform: scale(1.1);
+}
+
+.feedback-area {
+    padding: 1rem;
+    border-radius: 12px;
+    text-align: center;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.feedback-area.success { background: #d4edda; color: #155724; }
+.feedback-area.error { background: #f8d7da; color: #721c24; }
+
+.back-btn {
+    background: #6d4c41;
+    border: none;
+    color: white;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 0.8rem 1.5rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1rem;
+    border-radius: 30px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    transition: all 0.3s;
+    margin-bottom: 0.5rem;
+}
+
+.back-btn:hover {
+    background: #5d4037;
+    transform: translateX(-5px);
 }
 
 /* Map Overlays */
 .map-title-overlay {
     position: absolute;
-    top: 20px;
-    right: 20px;
+    top: 2rem;
+    right: 2rem;
     background: rgba(255, 253, 249, 0.95);
-    padding: 0.8rem 1.5rem;
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    padding: 1rem 1.5rem;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
     z-index: 1000;
     font-weight: 800;
-    font-size: 1.3rem;
+    font-size: 1.5rem;
     color: #4e342e;
     border: 2px solid #e2d1bc;
 }
 
-/* =========================================
-   FLOATING INFO PANEL (New)
-========================================= */
-.floating-info {
-    position: absolute;
-    bottom: 25px;
-    left: 25px;
-    width: 380px;
-    max-height: 80vh;
-    background: #fffdf9;
-    border-radius: 20px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-    z-index: 1100;
+.faded .city-text { opacity: 0.6; }
+
+.custom-region-marker {
+    background: transparent;
+    border: none;
+    pointer-events: none;
+}
+
+.region-text {
+    white-space: nowrap;
+    font-family: 'Frank Ruhl Libre', serif;
+    font-weight: 900 !important;
+    color: #4e342e;
+    text-shadow: 
+        0 0 8px white,
+        0 0 15px white,
+        0 0 25px white;
+    text-align: center;
+    line-height: 1;
+}
+
+.region-text.small { font-size: 1.2rem; }
+.region-text.medium { font-size: 1.8rem; letter-spacing: 2px; }
+.region-text.large { font-size: 2.5rem; letter-spacing: 4px; opacity: 0.8; }
+.region-text.huge { font-size: 4rem; letter-spacing: 6px; opacity: 0.6; }
+.region-text.xlarge { font-size: 3.2rem; letter-spacing: 5px; opacity: 0.7; }
+.region-text.multiline { 
+    white-space: normal; 
+    line-height: 1.2; 
+    max-width: 180px; 
     display: flex;
     flex-direction: column;
-    overflow: hidden;
-    border: 2px solid #e2d1bc;
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    animation: slideInLeft 0.5s ease;
-}
-
-@keyframes slideInLeft {
-    from { opacity: 0; transform: translateX(-50px); }
-    to { opacity: 1; transform: translateX(0); }
-}
-
-.floating-info.minimized {
-    width: 140px;
-    height: 48px;
-    bottom: 20px;
-    left: 20px;
-    cursor: pointer;
-}
-
-.info-header {
-    padding: 12px 18px;
-    display: flex;
     align-items: center;
-    gap: 10px;
-    color: white;
-    font-weight: 800;
-    cursor: pointer;
-    user-select: none;
-    position: relative;
-    background: #6d4c41;
-}
-
-.info-header .minimize-icon {
-    margin-right: auto;
-    font-size: 1.2rem;
-    transition: transform 0.3s;
-}
-
-.floating-info.minimized .minimize-icon {
-    transform: rotate(180deg);
-}
-
-.info-body {
-    padding: 1.5rem;
-    overflow-y: auto;
-    flex: 1;
-    scrollbar-width: thin;
-    scrollbar-color: #e2d1bc transparent;
-}
-
-.floating-info.minimized .info-body {
-    display: none;
-}
-
-/* Mobile Info Icon */
-.mobile-info-toggle {
-    display: none; /* Desktop hidden */
-}
-
-/* Info Panel Contents */
-.ctx-summary {
-    font-size: 1rem;
-    line-height: 1.7;
-    color: #3b2a1a;
-    margin-bottom: 1.2rem;
-    white-space: pre-line;
-}
-
-.ctx-verse {
-    background: linear-gradient(135deg, rgba(109,76,65,0.06), rgba(161,136,127,0.04));
-    border-right: 4px solid #6d4c41;
-    border-radius: 8px;
-    padding: 1rem;
-    margin-bottom: 1rem;
-    font-family: 'Frank Ruhl Libre', serif;
-    font-size: 1.05rem;
-    line-height: 1.8;
-    color: #2c1e16;
-}
-
-.ctx-verse cite {
-    display: block;
-    margin-top: 0.5rem;
-    font-size: 0.85rem;
-    font-weight: 700;
-    opacity: 0.7;
-    font-style: normal;
-}
-
-.ctx-chapters {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-bottom: 1rem;
-}
-
-.ctx-chapter-tag {
-    background: #f0ebe4;
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-size: 0.85rem;
-    font-weight: 800;
-    color: #6d4c41;
-    border: 1px solid #e2d1bc;
+    justify-content: center;
 }
 
 /* =========================================
-   Markers & Labels
-========================================= */
+   City Markers & Zoom Scaling
+   ========================================= */
 .custom-city-marker {
     pointer-events: none !important;
     display: flex;
@@ -346,6 +322,7 @@ h1, h2, h3 {
     justify-content: center;
     width: 0 !important;
     height: 0 !important;
+    overflow: visible;
 }
 
 .city-dot {
@@ -355,96 +332,425 @@ h1, h2, h3 {
     border: 1.5px solid white;
     border-radius: 50%;
     box-shadow: 0 0 4px rgba(0,0,0,0.4);
+    flex-shrink: 0;
     z-index: 2;
+    position: relative;
 }
 
+/* City label — tightly hugging the dot */
 .city-text {
     position: absolute;
-    bottom: 7px; /* Tight to dot */
+    /* Default: label sits just above the dot */
+    bottom: 7px;
     left: 50%;
     transform: translateX(-50%);
     white-space: nowrap;
     font-size: 13px;
     font-weight: 700;
-    color: #1a1512;
-    text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff, 0 0 8px #fff;
-    transition: font-size 0.2s;
+    color: #2c1e16;
+    text-shadow: 
+        -1px -1px 0 #fff,  
+         1px -1px 0 #fff,
+        -1px  1px 0 #fff,
+         1px  1px 0 #fff,
+         0 0 6px rgba(255,255,255,0.9);
+    line-height: 1;
     z-index: 1;
+    pointer-events: none;
+    /* Smooth transition for zoom-based scaling only */
+    transition: font-size 0.15s ease;
 }
 
-.offset-up .city-text { bottom: 10px; }
-.offset-down .city-text { bottom: auto; top: 7px; }
+/*
+  Collision offset classes:
+  offset-up  → label goes higher (dot is below the text)
+  offset-down → label goes below the dot
+*/
+.offset-up .city-text { 
+    bottom: 10px;
+}
+.offset-down .city-text { 
+    bottom: auto;
+    top: 7px; 
+}
+/* Side offsets if needed */
+.offset-left .city-text { 
+    bottom: auto;
+    top: 50%; 
+    left: auto;
+    right: 8px; 
+    transform: translateY(-50%);
+}
+.offset-right .city-text { 
+    bottom: auto;
+    top: 50%; 
+    left: 8px;
+    transform: translateY(-50%);
+}
 
-/* Custom zoom vars */
+/* =========================================
+   Smooth Zoom-based text scaling
+   Uses CSS custom property set by JS
+========================================= */
 #map {
     --city-font-size: 13px;
     --region-scale: 1;
 }
-.city-text { font-size: var(--city-font-size); }
-.region-text { font-size: calc(1rem * var(--region-scale)); }
+
+.city-text {
+    font-size: var(--city-font-size, 13px);
+}
+
+.region-text.small  { font-size: calc(1.2rem * var(--region-scale, 1)); }
+.region-text.medium { font-size: calc(1.8rem * var(--region-scale, 1)); letter-spacing: 2px; }
+.region-text.large  { font-size: calc(2.5rem * var(--region-scale, 1)); letter-spacing: 4px; opacity: 0.8; }
+.region-text.huge   { font-size: calc(4rem   * var(--region-scale, 1)); letter-spacing: 6px; opacity: 0.6; }
+.region-text.xlarge { font-size: calc(3.2rem * var(--region-scale, 1)); letter-spacing: 5px; opacity: 0.7; }
+
+/* Fallback: old class-based zoom scaler (kept for compatibility, can be removed) */
+.z-low .city-text  { --city-font-size: 10px; }
+.z-mid .city-text  { --city-font-size: 13px; }
+.z-high .city-text { --city-font-size: 17px; }
+
 
 /* =========================================
-   Media Queries
+   Floating Map Context Panel & Button
+========================================= */
+.mobile-info-btn {
+    display: none; /* hidden on desktop */
+}
+
+.floating-context-container {
+    position: absolute;
+    bottom: 2rem;
+    left: 2rem;
+    width: 380px;
+    max-height: calc(100vh - 4rem);
+    z-index: 1000;
+    pointer-events: none; /* Let clicks pass through empty space */
+}
+
+.floating-context-container.hidden {
+    display: none !important;
+}
+
+.map-context-panel {
+    border-radius: 16px;
+    overflow: hidden;
+    border: 2px solid rgba(255,255,255,0.8);
+    background: rgba(255, 253, 249, 0.96);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    pointer-events: auto; /* Re-enable clicks for the panel itself */
+    animation: fadeIn 0.4s ease;
+    display: flex;
+    flex-direction: column;
+    max-height: calc(100vh - 4rem);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.map-context-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 1rem 1.2rem;
+    font-weight: 800;
+    font-size: 1.05rem;
+    color: #fff;
+    cursor: pointer;
+    user-select: none;
+    flex-shrink: 0;
+}
+
+.map-context-header .ctx-arrow {
+    margin-right: auto;
+    transition: transform 0.25s ease;
+    font-size: 0.8rem;
+    opacity: 0.8;
+}
+
+.map-context-panel.collapsed .ctx-arrow {
+    transform: rotate(180deg);
+}
+
+.map-context-body {
+    padding: 1.2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    background: transparent;
+    border-top: 1px solid #e2d1bc;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(109, 76, 65, 0.3) transparent;
+}
+
+.map-context-panel.collapsed .map-context-body {
+    display: none;
+}
+
+.ctx-summary {
+    font-size: 0.97rem;
+    line-height: 1.7;
+    color: #3a2a1a;
+    white-space: pre-line;
+}
+
+.ctx-verse {
+    background: linear-gradient(135deg, rgba(109,76,65,0.07), rgba(161,136,127,0.05));
+    border-right: 4px solid;
+    border-radius: 8px;
+    padding: 0.85rem 1rem;
+    font-family: 'Frank Ruhl Libre', serif;
+    font-size: 1rem;
+    line-height: 1.8;
+    color: #4e342e;
+    direction: rtl;
+}
+
+.ctx-verse cite {
+    display: block;
+    margin-top: 0.4rem;
+    font-size: 0.82rem;
+    font-style: normal;
+    font-weight: 700;
+    opacity: 0.7;
+}
+
+.ctx-chapters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.ctx-chapter-tag {
+    background: rgba(0,0,0,0.06);
+    border-radius: 20px;
+    padding: 3px 10px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #5d4037;
+}
+
+
+/* =========================================
+   Mobile Bottom Sheet
 ========================================= */
 @media (max-width: 768px) {
-    .app-container { flex-direction: column-reverse; }
-    .sidebar { 
-        width: 100%; 
-        height: 45vh; 
-        position: fixed; 
-        bottom: 0; 
-        border-radius: 20px 20px 0 0; 
-        z-index: 2000;
+    .app-container {
+        flex-direction: column-reverse;
     }
     
-    /* MOBILE HIDE INFO PANEL UNTIL CLICKED */
-    .floating-info {
-        top: 20px;
-        left: 20px;
-        bottom: auto;
-        right: 20px;
-        width: auto;
-        max-height: 70vh;
-        z-index: 4000;
-        transform: scale(0);
-        opacity: 0;
-        transform-origin: top right;
+    .sidebar {
+        width: 100%;
+        height: 40vh;
+        max-height: 95vh;
+        min-height: 60px;
+        position: fixed;
+        bottom: 0;
+        right: 0;
+        z-index: 3000;
+        border-radius: 25px 25px 0 0;
+        box-shadow: 0 -10px 40px rgba(0,0,0,0.3);
+        border: none;
+        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        display: flex;
+        flex-direction: column;
     }
     
-    .floating-info.active {
-        transform: scale(1);
-        opacity: 1;
+    .sidebar-header {
+        display: block;
+        padding: 15px 0;
+        background: #fffdf9;
+        border-bottom: 1px solid #e2d1bc;
+        position: relative;
+        z-index: 10;
     }
 
-    .mobile-info-toggle {
+    .sidebar-drag-handle {
+        width: 60px;
+        height: 6px;
+        background: #e2d1bc;
+        border-radius: 10px;
+        margin: 0 auto;
+        cursor: ns-resize;
+        touch-action: none;
+    }
+
+    .sidebar-content {
+        padding: 1.5rem;
+        padding-top: 1rem;
+    }
+    
+    .sidebar.collapsed {
+        transform: translateY(calc(100% - 60px));
+        height: 40vh !important;
+    }
+    
+    .toggle-sidebar {
         display: flex;
         position: absolute;
-        top: 20px;
-        right: 30px; /* Offset from map title */
-        width: 44px;
-        height: 44px;
+        top: -45px;
+        left: 50%;
+        transform: translateX(-50%);
         background: #6d4c41;
-        border: 2px solid #e2d1bc;
-        border-radius: 50%;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-        z-index: 3000;
+        color: white;
+        border: none;
+        border-radius: 25px 25px 0 0;
+        width: 100px;
+        height: 50px;
+        flex-direction: column;
         align-items: center;
         justify-content: center;
+        z-index: 3010;
+        box-shadow: 0 -5px 15px rgba(0,0,0,0.2);
+    }
+
+    .handle-bar {
+        width: 30px;
+        height: 4px;
+        background: rgba(255,255,255,0.5);
+        border-radius: 4px;
+        margin-bottom: 4px;
+    }
+
+    .quick-40-btn {
+        display: block;
+        position: absolute;
+        top: 12px;
+        left: 20px;
+        background: #e2d1bc;
+        border: none;
+        color: #6d4c41;
+        font-weight: 800;
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        z-index: 20;
         cursor: pointer;
     }
     
+    .sidebar.collapsed .toggle-sidebar .arrow {
+        transform: rotate(180deg);
+    }
+    
+    #map {
+        height: 100vh;
+    }
+    
     .map-title-overlay {
-        right: 85px; /* Push aside to make room for ! button */
-        top: 20px;
-        left: auto;
-        font-size: 1.1rem;
-        padding: 8px 15px;
+        top: 1rem;
+        left: 1rem;
+        right: 1rem;
+        font-size: 1.2rem;
+        text-align: center;
+        padding: 0.8rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between; /* Space between text and button */
+        gap: 10px;
     }
 
-    .info-icon {
+    #map-title-text {
+        flex-grow: 1;
+    }
+
+    .mobile-info-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
         color: white;
-        font-size: 24px;
-        font-weight: 900;
-        font-family: serif;
+        background: #6d4c41; /* Default background, overridden by JS */
+        border: none;
+        border-radius: 50%;
+        width: 32px;
+        height: 32px;
+        font-size: 1.2rem;
+        font-weight: bold;
+        cursor: pointer;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        z-index: 1000;
+        flex-shrink: 0;
+    }
+
+    .mobile-info-btn.hidden {
+        display: none !important;
+    }
+
+    .floating-context-container {
+        display: none;
+        bottom: 40vh;
+        left: 1rem;
+        right: 1rem;
+        width: auto;
+        top: calc(1rem + 60px);
+        max-height: none;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .floating-context-container.mobile-open {
+        display: flex;
+    }
+
+    .map-context-panel {
+        max-height: 100%;
+        width: 100%;
+        margin: auto;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    }
+
+    .sidebar.practice-mode header {
+        display: none;
+    }
+    
+    .sidebar.practice-mode .sidebar-content {
+        padding: 0.8rem;
+        padding-top: 0.5rem;
+    }
+
+    .sidebar.practice-mode .sidebar-content h2,
+    .sidebar.practice-mode .sidebar-content .instruction {
+        display: none;
+    }
+    
+    .sidebar.practice-mode .term-list {
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        margin: 0.5rem 0;
+    }
+
+    .term-item {
+        padding: 0.8rem;
+        border-radius: 12px;
+    }
+
+    .term-name {
+        font-size: 1rem;
+        margin-bottom: 0.5rem;
+        text-align: center;
+    }
+
+    .number-selector {
+        gap: 5px;
+    }
+
+    .num-btn {
+        width: 38px;
+        height: 38px;
+        font-size: 1rem;
+    }
+
+    .feedback-area {
+        padding: 0.5rem;
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+    }
+
+    .map-context-panel {
+        margin-top: 1rem;
     }
 }
