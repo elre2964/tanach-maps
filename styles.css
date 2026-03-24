@@ -21,11 +21,11 @@ h1, h2, h3 {
 }
 
 .subtitle {
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     color: #795d43;
-    margin-bottom: 1rem;
+    margin-bottom: 1.2rem;
     font-weight: 600;
-    letter-spacing: 0.02em;
+    letter-spacing: 0.01em;
 }
 
 /* =========================================
@@ -38,7 +38,7 @@ h1, h2, h3 {
 }
 
 .sidebar {
-    width: 600px;
+    width: 650px; /* Increased from 600px as requested */
     background: #fffdf9;
     box-shadow: -4px 0 20px rgba(0,0,0,0.2);
     z-index: 2000;
@@ -65,17 +65,19 @@ h1, h2, h3 {
     flex-direction: column;
 }
 
-/* Copyright pinned at bottom of sidebar content */
-.sidebar-copyright {
-    margin-top: auto;
-    padding-top: 1.2rem;
-    padding-bottom: 0.4rem;
-    text-align: center;
+/* Top Meta (Copyright + Title) */
+.sidebar-top-meta {
+    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.copyright-tag {
     font-size: 0.82rem;
     color: #a08060;
-    font-weight: 700;
-    letter-spacing: 0.03em;
-    border-top: 1px solid #e2d1bc;
+    font-weight: 800;
+    margin-bottom: 0.4rem;
+    display: inline-block;
 }
 
 .sidebar.practice-mode header {
@@ -142,11 +144,11 @@ h1, h2, h3 {
 .map-list {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 0.8rem;
+    gap: 0.6rem;
 }
 
 .map-btn {
-    padding: 1.2rem;
+    padding: 1rem;
     background: #fdfaf6;
     border: 1px solid #e2d1bc;
     border-radius: 12px;
@@ -154,9 +156,9 @@ h1, h2, h3 {
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s;
-    font-size: 1.1rem;
+    font-size: 1.05rem;
     color: #5d4037;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.04);
 }
 
 .map-btn:hover, .map-btn.active {
@@ -185,17 +187,17 @@ h1, h2, h3 {
     transform: translateY(-2px);
 }
 
-/* Practice Styles */
+/* Practice Styles - SHRUNK for better fit */
 .term-list {
     display: grid;
-    gap: 1.5rem;
-    margin: 1.5rem 0;
+    gap: 0.8rem; /* Reduced gap */
+    margin: 1rem 0;
 }
 
 .term-item {
     background: #fdfaf6;
-    padding: 1.2rem;
-    border-radius: 16px;
+    padding: 0.8rem; /* Reduced padding from 1.2rem */
+    border-radius: 14px;
     border: 2px solid #e2d1bc;
     transition: all 0.3s;
 }
@@ -205,26 +207,27 @@ h1, h2, h3 {
 
 .term-name {
     display: block;
-    font-size: 1.2rem;
+    font-size: 1.1rem; /* Slightly smaller */
     font-weight: 700;
-    margin-bottom: 1rem;
+    margin-bottom: 0.6rem;
     color: #5d4037;
+    text-align: center;
 }
 
 .number-selector {
     display: flex;
-    gap: 8px;
+    gap: 6px;
     justify-content: center;
 }
 
 .num-btn {
-    width: 50px;
-    height: 50px;
+    width: 44px; /* Slightly smaller from 50px */
+    height: 44px;
     border-radius: 50%;
     border: 2px solid #e2d1bc;
     background: white;
     font-weight: 700;
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     cursor: pointer;
     transition: all 0.2s;
     color: #6d4c41;
@@ -234,15 +237,15 @@ h1, h2, h3 {
     background: #6d4c41;
     color: white;
     border-color: #6d4c41;
-    transform: scale(1.1);
+    transform: scale(1.08); /* Smaller boost */
 }
 
 .feedback-area {
-    padding: 1rem;
-    border-radius: 12px;
+    padding: 0.8rem;
+    border-radius: 10px;
     text-align: center;
     font-weight: 700;
-    margin-bottom: 1rem;
+    margin-bottom: 0.8rem;
 }
 
 .feedback-area.success { background: #d4edda; color: #155724; }
@@ -254,23 +257,20 @@ h1, h2, h3 {
     color: white;
     font-weight: 700;
     cursor: pointer;
-    padding: 0.8rem 1.5rem;
+    padding: 0.6rem 1.2rem;
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    font-size: 1rem;
+    gap: 6px;
+    font-size: 0.95rem;
     border-radius: 30px;
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     transition: all 0.3s;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.4rem;
 }
 
-.back-btn:hover {
-    background: #5d4037;
-    transform: translateX(-5px);
-}
-
-/* Map Title Overlay */
+/* =========================================
+   Map Elements
+========================================= */
 .map-title-overlay {
     position: absolute;
     top: 2rem;
@@ -360,7 +360,7 @@ h1, h2, h3 {
     text-shadow: 
         -1px -1px 0 #fff,  
          1px -1px 0 #fff,
-        -1px  1px 0 #fff,
+        -1px  1px 0 #fff,  
          1px  1px 0 #fff,
          0 0 6px rgba(255,255,255,0.95);
     line-height: 1;
@@ -382,12 +382,6 @@ h1, h2, h3 {
     --region-scale: 1;
 }
 
-.region-text.small  { font-size: calc(1.2rem  * var(--region-scale, 1)); }
-.region-text.medium { font-size: calc(1.8rem  * var(--region-scale, 1)); letter-spacing: 2px; }
-.region-text.large  { font-size: calc(2.5rem  * var(--region-scale, 1)); letter-spacing: 4px; opacity: 0.8; }
-.region-text.huge   { font-size: calc(4rem    * var(--region-scale, 1)); letter-spacing: 6px; opacity: 0.6; }
-.region-text.xlarge { font-size: calc(3.2rem  * var(--region-scale, 1)); letter-spacing: 5px; opacity: 0.7; }
-
 /* =========================================
    Desktop Info Overlay  (bottom-left of map)
 ========================================= */
@@ -396,7 +390,7 @@ h1, h2, h3 {
     bottom: 2rem;
     left: 2rem;
     width: 370px;
-    max-height: 72vh;
+    max-height: 75vh;
     display: flex;
     flex-direction: column;
     background: rgba(255,253,249,0.97);
@@ -407,11 +401,6 @@ h1, h2, h3 {
     overflow: hidden;
     transition: max-height 0.35s cubic-bezier(0.4,0,0.2,1),
                 box-shadow 0.3s ease;
-}
-
-.map-info-overlay.minimized {
-    /* max-height collapses to just the header — set via JS */
-    box-shadow: 0 4px 16px rgba(0,0,0,0.14);
 }
 
 .mio-header {
@@ -427,7 +416,6 @@ h1, h2, h3 {
 }
 
 .mio-emoji { font-size: 1.3rem; }
-
 .mio-title { flex: 1; line-height: 1.2; }
 
 .mio-minimize {
@@ -436,7 +424,6 @@ h1, h2, h3 {
     color: #fff;
     font-size: 1.2rem;
     font-weight: 900;
-    line-height: 1;
     width: 28px;
     height: 28px;
     border-radius: 50%;
@@ -448,11 +435,9 @@ h1, h2, h3 {
     flex-shrink: 0;
 }
 
-.mio-minimize:hover { background: rgba(255,255,255,0.4); }
-
 .mio-body {
     overflow-y: auto;
-    padding: 1rem 1.1rem 1.1rem;
+    padding: 1.1rem;
     display: flex;
     flex-direction: column;
     gap: 0.9rem;
@@ -460,70 +445,32 @@ h1, h2, h3 {
     scrollbar-color: #e2d1bc transparent;
 }
 
-/* Mobile info button — ! circle, top-right near title */
-.map-info-btn {
-    display: none; /* hidden on desktop */
-}
-
-/* Mobile info modal */
-.map-info-modal {
-    display: none;
-}
-
-/* =========================================
-   Shared content styles (overlay & modal)
-========================================= */
-.ctx-chapters {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-}
-
-.ctx-chapter-tag {
-    border-radius: 20px;
-    padding: 3px 10px;
-    font-size: 0.8rem;
-    font-weight: 700;
-}
-
-.ctx-summary {
-    font-size: 0.95rem;
-    line-height: 1.75;
-    color: #3a2a1a;
-}
-
+/* Shared content styles */
+.ctx-chapters { display: flex; flex-wrap: wrap; gap: 6px; }
+.ctx-chapter-tag { border-radius: 20px; padding: 3px 10px; font-size: 0.8rem; font-weight: 700; }
+.ctx-summary { font-size: 0.95rem; line-height: 1.75; color: #3a2a1a; }
 .ctx-verse {
     background: rgba(109,76,65,0.06);
     border-right: 4px solid;
     border-radius: 8px;
     padding: 0.8rem 1rem;
     font-family: 'Frank Ruhl Libre', serif;
-    font-size: 0.97rem;
+    font-size: 0.98rem;
     line-height: 1.85;
     color: #4e342e;
     direction: rtl;
 }
-
-.ctx-verse cite {
-    display: block;
-    margin-top: 0.35rem;
-    font-size: 0.8rem;
-    font-style: normal;
-    font-weight: 700;
-    opacity: 0.65;
-}
+.ctx-verse cite { display: block; margin-top: 0.35rem; font-size: 0.8rem; font-style: normal; font-weight: 700; opacity: 0.65; }
 
 /* =========================================
-   Mobile Bottom Sheet
+   Mobile Overrides
 ========================================= */
 @media (max-width: 768px) {
-    .app-container {
-        flex-direction: column-reverse;
-    }
+    .app-container { flex-direction: column-reverse; }
 
     .sidebar {
         width: 100%;
-        height: 40vh;
+        height: 48vh; /* Slightly taller default */
         max-height: 95vh;
         min-height: 60px;
         position: fixed;
@@ -533,9 +480,6 @@ h1, h2, h3 {
         border-radius: 25px 25px 0 0;
         box-shadow: 0 -10px 40px rgba(0,0,0,0.3);
         border: none;
-        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        display: flex;
-        flex-direction: column;
     }
 
     .sidebar-header {
@@ -545,7 +489,6 @@ h1, h2, h3 {
         border-bottom: 1px solid #e2d1bc;
         position: relative;
         z-index: 10;
-        flex-shrink: 0;
     }
 
     .sidebar-drag-handle {
@@ -554,19 +497,11 @@ h1, h2, h3 {
         background: #e2d1bc;
         border-radius: 10px;
         margin: 0 auto;
-        cursor: ns-resize;
-        touch-action: none;
     }
 
-    .sidebar-content {
-        padding: 1rem 1.2rem;
-        padding-top: 0.8rem;
-    }
+    .sidebar-content { padding: 1rem 1.2rem; }
 
-    .sidebar.collapsed {
-        transform: translateY(calc(100% - 60px));
-        height: 40vh !important;
-    }
+    .sidebar.collapsed { transform: translateY(calc(100% - 60px)); height: 48vh !important; }
 
     .toggle-sidebar {
         display: flex;
@@ -587,35 +522,27 @@ h1, h2, h3 {
         box-shadow: 0 -5px 15px rgba(0,0,0,0.2);
     }
 
-    .handle-bar {
-        width: 28px;
-        height: 3px;
-        background: rgba(255,255,255,0.5);
-        border-radius: 4px;
-        margin-bottom: 3px;
-    }
-
-    .sidebar.collapsed .toggle-sidebar .arrow {
-        transform: rotate(180deg);
-    }
-
-    #map { height: 100vh; }
+    .handle-bar { width: 28px; height: 3px; background: rgba(255,255,255,0.5); border-radius: 4px; margin-bottom: 3px; }
 
     .map-title-overlay {
         top: 1rem;
-        left: 4rem;
+        left: 4.5rem;
         right: 1rem;
         font-size: 1.1rem;
-        text-align: center;
-        padding: 0.7rem 1rem;
+        padding: 0.7rem 0.8rem;
     }
 
-    /* Desktop overlay hidden on mobile */
-    .map-info-overlay {
-        display: none !important;
+    /* Compact practice on mobile */
+    .sidebar.practice-mode .term-list {
+        grid-template-columns: 1fr 1fr;
+        gap: 6px;
+        margin: 0.4rem 0;
     }
 
-    /* Mobile info button */
+    .term-item { padding: 0.6rem; border-radius: 12px; }
+    .term-name { font-size: 0.95rem; margin-bottom: 0.4rem; }
+    .num-btn { width: 38px; height: 38px; font-size: 0.95rem; }
+
     .map-info-btn {
         display: flex;
         align-items: center;
@@ -623,25 +550,17 @@ h1, h2, h3 {
         position: absolute;
         top: 1rem;
         left: 1rem;
-        width: 42px;
-        height: 42px;
+        width: 44px;
+        height: 44px;
         border-radius: 50%;
         background: #6d4c41;
         color: white;
         border: 3px solid white;
-        font-size: 1.3rem;
+        font-size: 1.4rem;
         font-weight: 900;
         font-family: serif;
-        font-style: italic;
         z-index: 1100;
         box-shadow: 0 4px 16px rgba(0,0,0,0.3);
-        cursor: pointer;
-        animation: pulse-info 2.5s infinite;
-    }
-
-    @keyframes pulse-info {
-        0%, 100% { box-shadow: 0 4px 16px rgba(0,0,0,0.3); }
-        50% { box-shadow: 0 4px 24px rgba(109,76,65,0.6); }
     }
 
     /* Mobile info modal */
@@ -651,20 +570,9 @@ h1, h2, h3 {
         inset: 0;
         z-index: 9000;
         align-items: flex-end;
-        pointer-events: none;
     }
 
-    .map-info-modal.hidden {
-        display: none !important;
-    }
-
-    .mim-backdrop {
-        position: absolute;
-        inset: 0;
-        background: rgba(0,0,0,0.45);
-        pointer-events: all;
-    }
-
+    .mim-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,0.45); }
     .mim-sheet {
         position: relative;
         width: 100%;
@@ -676,102 +584,13 @@ h1, h2, h3 {
         flex-direction: column;
         gap: 0.8rem;
         overflow-y: auto;
-        pointer-events: all;
-        box-shadow: 0 -10px 40px rgba(0,0,0,0.3);
-        animation: slideUp 0.32s cubic-bezier(0.4,0,0.2,1);
+        animation: slideUp 0.3s ease;
     }
 
-    @keyframes slideUp {
-        from { transform: translateY(100%); }
-        to   { transform: translateY(0); }
-    }
+    @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
 
-    .mim-handle {
-        width: 44px;
-        height: 5px;
-        background: #e2d1bc;
-        border-radius: 10px;
-        margin: 14px auto 0;
-        flex-shrink: 0;
-    }
-
-    .mim-header {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 0.8rem 0.5rem;
-        font-weight: 800;
-        font-size: 1.05rem;
-        color: #fff;
-        border-radius: 12px;
-        flex-shrink: 0;
-    }
-
-    .mim-body {
-        display: flex;
-        flex-direction: column;
-        gap: 0.9rem;
-        flex: 1;
-    }
-
-    .mim-close {
-        background: #e9e0d1;
-        border: none;
-        color: #5d4037;
-        font-weight: 700;
-        font-size: 1rem;
-        padding: 0.8rem;
-        border-radius: 12px;
-        cursor: pointer;
-        font-family: inherit;
-        flex-shrink: 0;
-    }
-
-    /* Practice mode tweaks */
-    .sidebar.practice-mode header { display: none; }
-
-    .sidebar.practice-mode .sidebar-content {
-        padding: 0.8rem;
-        padding-top: 0.5rem;
-    }
-
-    .sidebar.practice-mode .sidebar-content h2,
-    .sidebar.practice-mode .sidebar-content .instruction {
-        display: none;
-    }
-
-    .sidebar.practice-mode .term-list {
-        grid-template-columns: 1fr 1fr;
-        gap: 8px;
-        margin: 0.5rem 0;
-    }
-
-    .term-item {
-        padding: 0.8rem;
-        border-radius: 12px;
-    }
-
-    .term-name {
-        font-size: 1rem;
-        margin-bottom: 0.5rem;
-        text-align: center;
-    }
-
-    .number-selector { gap: 5px; }
-
-    .num-btn {
-        width: 38px;
-        height: 38px;
-        font-size: 1rem;
-    }
-
-    .feedback-area {
-        padding: 0.5rem;
-        margin-bottom: 0.5rem;
-        font-size: 0.9rem;
-    }
-
-    .sidebar-copyright {
-        display: none; /* shown in map overlay area on mobile instead */
-    }
+    .mim-handle { width: 44px; height: 5px; background: #e2d1bc; border-radius: 10px; margin: 14px auto 0; }
+    .mim-header { display: flex; align-items: center; gap: 10px; padding: 0.8rem; border-radius: 12px; color: #fff; }
+    .mim-body { display: flex; flex-direction: column; gap: 0.8rem; flex: 1; }
+    .mim-close { background: #e9e0d1; border: none; color: #5d4037; font-weight: 700; padding: 0.8rem; border-radius: 12px; }
 }
