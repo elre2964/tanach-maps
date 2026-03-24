@@ -21,9 +21,11 @@ h1, h2, h3 {
 }
 
 .subtitle {
-    font-size: 1rem;
+    font-size: 0.9rem;
     color: #795d43;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
 }
 
 /* =========================================
@@ -36,7 +38,7 @@ h1, h2, h3 {
 }
 
 .sidebar {
-    width: 550px;
+    width: 600px;
     background: #fffdf9;
     box-shadow: -4px 0 20px rgba(0,0,0,0.2);
     z-index: 2000;
@@ -49,19 +51,8 @@ h1, h2, h3 {
     padding: 0;
 }
 
-.panel-practice {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    overflow: hidden;
-}
-
-.sidebar.practice-mode header {
-    display: none;
-}
-
 .sidebar-header {
-    display: none; /* Only mobile */
+    display: none; /* Only visible on mobile */
 }
 
 .sidebar-content {
@@ -70,6 +61,25 @@ h1, h2, h3 {
     padding: 1.5rem;
     scrollbar-width: thin;
     scrollbar-color: #e2d1bc transparent;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Copyright pinned at bottom of sidebar content */
+.sidebar-copyright {
+    margin-top: auto;
+    padding-top: 1.2rem;
+    padding-bottom: 0.4rem;
+    text-align: center;
+    font-size: 0.82rem;
+    color: #a08060;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    border-top: 1px solid #e2d1bc;
+}
+
+.sidebar.practice-mode header {
+    display: none;
 }
 
 .map-container {
@@ -191,7 +201,7 @@ h1, h2, h3 {
 }
 
 .term-item.correct { border-color: #27ae60; background: #f0fff4; }
-.term-item.wrong { border-color: #e74c3c; background: #fff5f5; }
+.term-item.wrong   { border-color: #e74c3c; background: #fff5f5; }
 
 .term-name {
     display: block;
@@ -236,7 +246,7 @@ h1, h2, h3 {
 }
 
 .feedback-area.success { background: #d4edda; color: #155724; }
-.feedback-area.error { background: #f8d7da; color: #721c24; }
+.feedback-area.error   { background: #f8d7da; color: #721c24; }
 
 .back-btn {
     background: #6d4c41;
@@ -260,7 +270,7 @@ h1, h2, h3 {
     transform: translateX(-5px);
 }
 
-/* Map Overlays */
+/* Map Title Overlay */
 .map-title-overlay {
     position: absolute;
     top: 2rem;
@@ -278,6 +288,7 @@ h1, h2, h3 {
 
 .faded .city-text { opacity: 0.6; }
 
+/* Region labels */
 .custom-region-marker {
     background: transparent;
     border: none;
@@ -297,10 +308,10 @@ h1, h2, h3 {
     line-height: 1;
 }
 
-.region-text.small { font-size: 1.2rem; }
+.region-text.small  { font-size: 1.2rem; }
 .region-text.medium { font-size: 1.8rem; letter-spacing: 2px; }
-.region-text.large { font-size: 2.5rem; letter-spacing: 4px; opacity: 0.8; }
-.region-text.huge { font-size: 4rem; letter-spacing: 6px; opacity: 0.6; }
+.region-text.large  { font-size: 2.5rem; letter-spacing: 4px; opacity: 0.8; }
+.region-text.huge   { font-size: 4rem;   letter-spacing: 6px; opacity: 0.6; }
 .region-text.xlarge { font-size: 3.2rem; letter-spacing: 5px; opacity: 0.7; }
 .region-text.multiline { 
     white-space: normal; 
@@ -314,7 +325,7 @@ h1, h2, h3 {
 
 /* =========================================
    City Markers & Zoom Scaling
-   ========================================= */
+========================================= */
 .custom-city-marker {
     pointer-events: none !important;
     display: flex;
@@ -340,12 +351,10 @@ h1, h2, h3 {
 /* City label — tightly hugging the dot */
 .city-text {
     position: absolute;
-    /* Default: label sits just above the dot */
-    bottom: 7px;
+    bottom: 7px; /* Just above the dot */
     left: 50%;
     transform: translateX(-50%);
     white-space: nowrap;
-    font-size: 13px;
     font-weight: 700;
     color: #2c1e16;
     text-shadow: 
@@ -353,173 +362,117 @@ h1, h2, h3 {
          1px -1px 0 #fff,
         -1px  1px 0 #fff,
          1px  1px 0 #fff,
-         0 0 6px rgba(255,255,255,0.9);
+         0 0 6px rgba(255,255,255,0.95);
     line-height: 1;
     z-index: 1;
     pointer-events: none;
-    /* Smooth transition for zoom-based scaling only */
     transition: font-size 0.15s ease;
+    font-size: var(--city-font-size, 13px);
 }
 
-/*
-  Collision offset classes:
-  offset-up  → label goes higher (dot is below the text)
-  offset-down → label goes below the dot
-*/
-.offset-up .city-text { 
-    bottom: 10px;
-}
-.offset-down .city-text { 
-    bottom: auto;
-    top: 7px; 
-}
-/* Side offsets if needed */
-.offset-left .city-text { 
-    bottom: auto;
-    top: 50%; 
-    left: auto;
-    right: 8px; 
-    transform: translateY(-50%);
-}
-.offset-right .city-text { 
-    bottom: auto;
-    top: 50%; 
-    left: 8px;
-    transform: translateY(-50%);
-}
+/* Collision offset: up/down only (small, subtle) */
+.offset-up   .city-text { bottom: 9px; }
+.offset-down .city-text { bottom: auto; top: 7px; }
+.offset-left .city-text { bottom: auto; top: 50%; left: auto; right: 9px; transform: translateY(-50%); }
+.offset-right .city-text { bottom: auto; top: 50%; left: 9px; transform: translateY(-50%); }
 
-/* =========================================
-   Smooth Zoom-based text scaling
-   Uses CSS custom property set by JS
-========================================= */
+/* CSS custom-property-based zoom scaling */
 #map {
     --city-font-size: 13px;
     --region-scale: 1;
 }
 
-.city-text {
-    font-size: var(--city-font-size, 13px);
-}
-
-.region-text.small  { font-size: calc(1.2rem * var(--region-scale, 1)); }
-.region-text.medium { font-size: calc(1.8rem * var(--region-scale, 1)); letter-spacing: 2px; }
-.region-text.large  { font-size: calc(2.5rem * var(--region-scale, 1)); letter-spacing: 4px; opacity: 0.8; }
-.region-text.huge   { font-size: calc(4rem   * var(--region-scale, 1)); letter-spacing: 6px; opacity: 0.6; }
-.region-text.xlarge { font-size: calc(3.2rem * var(--region-scale, 1)); letter-spacing: 5px; opacity: 0.7; }
-
-/* Fallback: old class-based zoom scaler (kept for compatibility, can be removed) */
-.z-low .city-text  { --city-font-size: 10px; }
-.z-mid .city-text  { --city-font-size: 13px; }
-.z-high .city-text { --city-font-size: 17px; }
-
+.region-text.small  { font-size: calc(1.2rem  * var(--region-scale, 1)); }
+.region-text.medium { font-size: calc(1.8rem  * var(--region-scale, 1)); letter-spacing: 2px; }
+.region-text.large  { font-size: calc(2.5rem  * var(--region-scale, 1)); letter-spacing: 4px; opacity: 0.8; }
+.region-text.huge   { font-size: calc(4rem    * var(--region-scale, 1)); letter-spacing: 6px; opacity: 0.6; }
+.region-text.xlarge { font-size: calc(3.2rem  * var(--region-scale, 1)); letter-spacing: 5px; opacity: 0.7; }
 
 /* =========================================
-   Floating Map Context Panel & Button
+   Desktop Info Overlay  (bottom-left of map)
 ========================================= */
-.mobile-info-btn {
-    display: none; /* hidden on desktop */
-}
-
-.floating-context-container {
+.map-info-overlay {
     position: absolute;
     bottom: 2rem;
     left: 2rem;
-    width: 380px;
-    max-height: calc(100vh - 4rem);
-    z-index: 1000;
-    pointer-events: none; /* Let clicks pass through empty space */
-}
-
-.floating-context-container.hidden {
-    display: none !important;
-}
-
-.map-context-panel {
-    border-radius: 16px;
-    overflow: hidden;
-    border: 2px solid rgba(255,255,255,0.8);
-    background: rgba(255, 253, 249, 0.96);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-    pointer-events: auto; /* Re-enable clicks for the panel itself */
-    animation: fadeIn 0.4s ease;
+    width: 370px;
+    max-height: 72vh;
     display: flex;
     flex-direction: column;
-    max-height: calc(100vh - 4rem);
+    background: rgba(255,253,249,0.97);
+    border-radius: 18px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.22);
+    border: 2px solid #e2d1bc;
+    z-index: 1100;
+    overflow: hidden;
+    transition: max-height 0.35s cubic-bezier(0.4,0,0.2,1),
+                box-shadow 0.3s ease;
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(8px); }
-    to   { opacity: 1; transform: translateY(0); }
+.map-info-overlay.minimized {
+    /* max-height collapses to just the header — set via JS */
+    box-shadow: 0 4px 16px rgba(0,0,0,0.14);
 }
 
-.map-context-header {
+.mio-header {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 1rem 1.2rem;
+    gap: 8px;
+    padding: 0.85rem 1rem;
     font-weight: 800;
-    font-size: 1.05rem;
+    font-size: 0.95rem;
     color: #fff;
-    cursor: pointer;
-    user-select: none;
+    cursor: default;
     flex-shrink: 0;
 }
 
-.map-context-header .ctx-arrow {
-    margin-right: auto;
-    transition: transform 0.25s ease;
-    font-size: 0.8rem;
-    opacity: 0.8;
+.mio-emoji { font-size: 1.3rem; }
+
+.mio-title { flex: 1; line-height: 1.2; }
+
+.mio-minimize {
+    background: rgba(255,255,255,0.25);
+    border: none;
+    color: #fff;
+    font-size: 1.2rem;
+    font-weight: 900;
+    line-height: 1;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+    flex-shrink: 0;
 }
 
-.map-context-panel.collapsed .ctx-arrow {
-    transform: rotate(180deg);
-}
+.mio-minimize:hover { background: rgba(255,255,255,0.4); }
 
-.map-context-body {
-    padding: 1.2rem;
+.mio-body {
+    overflow-y: auto;
+    padding: 1rem 1.1rem 1.1rem;
     display: flex;
     flex-direction: column;
-    gap: 1rem;
-    background: transparent;
-    border-top: 1px solid #e2d1bc;
-    overflow-y: auto;
+    gap: 0.9rem;
     scrollbar-width: thin;
-    scrollbar-color: rgba(109, 76, 65, 0.3) transparent;
+    scrollbar-color: #e2d1bc transparent;
 }
 
-.map-context-panel.collapsed .map-context-body {
+/* Mobile info button — ! circle, top-right near title */
+.map-info-btn {
+    display: none; /* hidden on desktop */
+}
+
+/* Mobile info modal */
+.map-info-modal {
     display: none;
 }
 
-.ctx-summary {
-    font-size: 0.97rem;
-    line-height: 1.7;
-    color: #3a2a1a;
-    white-space: pre-line;
-}
-
-.ctx-verse {
-    background: linear-gradient(135deg, rgba(109,76,65,0.07), rgba(161,136,127,0.05));
-    border-right: 4px solid;
-    border-radius: 8px;
-    padding: 0.85rem 1rem;
-    font-family: 'Frank Ruhl Libre', serif;
-    font-size: 1rem;
-    line-height: 1.8;
-    color: #4e342e;
-    direction: rtl;
-}
-
-.ctx-verse cite {
-    display: block;
-    margin-top: 0.4rem;
-    font-size: 0.82rem;
-    font-style: normal;
-    font-weight: 700;
-    opacity: 0.7;
-}
-
+/* =========================================
+   Shared content styles (overlay & modal)
+========================================= */
 .ctx-chapters {
     display: flex;
     flex-wrap: wrap;
@@ -527,14 +480,38 @@ h1, h2, h3 {
 }
 
 .ctx-chapter-tag {
-    background: rgba(0,0,0,0.06);
     border-radius: 20px;
     padding: 3px 10px;
     font-size: 0.8rem;
     font-weight: 700;
-    color: #5d4037;
 }
 
+.ctx-summary {
+    font-size: 0.95rem;
+    line-height: 1.75;
+    color: #3a2a1a;
+}
+
+.ctx-verse {
+    background: rgba(109,76,65,0.06);
+    border-right: 4px solid;
+    border-radius: 8px;
+    padding: 0.8rem 1rem;
+    font-family: 'Frank Ruhl Libre', serif;
+    font-size: 0.97rem;
+    line-height: 1.85;
+    color: #4e342e;
+    direction: rtl;
+}
+
+.ctx-verse cite {
+    display: block;
+    margin-top: 0.35rem;
+    font-size: 0.8rem;
+    font-style: normal;
+    font-weight: 700;
+    opacity: 0.65;
+}
 
 /* =========================================
    Mobile Bottom Sheet
@@ -543,7 +520,7 @@ h1, h2, h3 {
     .app-container {
         flex-direction: column-reverse;
     }
-    
+
     .sidebar {
         width: 100%;
         height: 40vh;
@@ -560,19 +537,20 @@ h1, h2, h3 {
         display: flex;
         flex-direction: column;
     }
-    
+
     .sidebar-header {
         display: block;
-        padding: 15px 0;
+        padding: 12px 0 8px;
         background: #fffdf9;
         border-bottom: 1px solid #e2d1bc;
         position: relative;
         z-index: 10;
+        flex-shrink: 0;
     }
 
     .sidebar-drag-handle {
-        width: 60px;
-        height: 6px;
+        width: 50px;
+        height: 5px;
         background: #e2d1bc;
         border-radius: 10px;
         margin: 0 auto;
@@ -581,27 +559,27 @@ h1, h2, h3 {
     }
 
     .sidebar-content {
-        padding: 1.5rem;
-        padding-top: 1rem;
+        padding: 1rem 1.2rem;
+        padding-top: 0.8rem;
     }
-    
+
     .sidebar.collapsed {
         transform: translateY(calc(100% - 60px));
         height: 40vh !important;
     }
-    
+
     .toggle-sidebar {
         display: flex;
         position: absolute;
-        top: -45px;
+        top: -42px;
         left: 50%;
         transform: translateX(-50%);
         background: #6d4c41;
         color: white;
         border: none;
-        border-radius: 25px 25px 0 0;
-        width: 100px;
-        height: 50px;
+        border-radius: 22px 22px 0 0;
+        width: 90px;
+        height: 44px;
         flex-direction: column;
         align-items: center;
         justify-content: center;
@@ -610,103 +588,148 @@ h1, h2, h3 {
     }
 
     .handle-bar {
-        width: 30px;
-        height: 4px;
+        width: 28px;
+        height: 3px;
         background: rgba(255,255,255,0.5);
         border-radius: 4px;
-        margin-bottom: 4px;
+        margin-bottom: 3px;
     }
 
-    .quick-40-btn {
-        display: block;
-        position: absolute;
-        top: 12px;
-        left: 20px;
-        background: #e2d1bc;
-        border: none;
-        color: #6d4c41;
-        font-weight: 800;
-        padding: 6px 14px;
-        border-radius: 20px;
-        font-size: 0.8rem;
-        z-index: 20;
-        cursor: pointer;
-    }
-    
     .sidebar.collapsed .toggle-sidebar .arrow {
         transform: rotate(180deg);
     }
-    
-    #map {
-        height: 100vh;
-    }
-    
+
+    #map { height: 100vh; }
+
     .map-title-overlay {
         top: 1rem;
-        left: 1rem;
+        left: 4rem;
         right: 1rem;
-        font-size: 1.2rem;
+        font-size: 1.1rem;
         text-align: center;
-        padding: 0.8rem;
-        display: flex;
-        align-items: center;
-        justify-content: space-between; /* Space between text and button */
-        gap: 10px;
+        padding: 0.7rem 1rem;
     }
 
-    #map-title-text {
-        flex-grow: 1;
-    }
-
-    .mobile-info-btn {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        background: #6d4c41; /* Default background, overridden by JS */
-        border: none;
-        border-radius: 50%;
-        width: 32px;
-        height: 32px;
-        font-size: 1.2rem;
-        font-weight: bold;
-        cursor: pointer;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-        z-index: 1000;
-        flex-shrink: 0;
-    }
-
-    .mobile-info-btn.hidden {
+    /* Desktop overlay hidden on mobile */
+    .map-info-overlay {
         display: none !important;
     }
 
-    .floating-context-container {
-        display: none;
-        bottom: 40vh;
-        left: 1rem;
-        right: 1rem;
-        width: auto;
-        top: calc(1rem + 60px);
-        max-height: none;
+    /* Mobile info button */
+    .map-info-btn {
+        display: flex;
         align-items: center;
         justify-content: center;
+        position: absolute;
+        top: 1rem;
+        left: 1rem;
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        background: #6d4c41;
+        color: white;
+        border: 3px solid white;
+        font-size: 1.3rem;
+        font-weight: 900;
+        font-family: serif;
+        font-style: italic;
+        z-index: 1100;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+        cursor: pointer;
+        animation: pulse-info 2.5s infinite;
     }
 
-    .floating-context-container.mobile-open {
+    @keyframes pulse-info {
+        0%, 100% { box-shadow: 0 4px 16px rgba(0,0,0,0.3); }
+        50% { box-shadow: 0 4px 24px rgba(109,76,65,0.6); }
+    }
+
+    /* Mobile info modal */
+    .map-info-modal {
         display: flex;
+        position: fixed;
+        inset: 0;
+        z-index: 9000;
+        align-items: flex-end;
+        pointer-events: none;
     }
 
-    .map-context-panel {
-        max-height: 100%;
+    .map-info-modal.hidden {
+        display: none !important;
+    }
+
+    .mim-backdrop {
+        position: absolute;
+        inset: 0;
+        background: rgba(0,0,0,0.45);
+        pointer-events: all;
+    }
+
+    .mim-sheet {
+        position: relative;
         width: 100%;
-        margin: auto;
-        box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        max-height: 85vh;
+        background: #fffdf9;
+        border-radius: 24px 24px 0 0;
+        padding: 0 1.2rem 1.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.8rem;
+        overflow-y: auto;
+        pointer-events: all;
+        box-shadow: 0 -10px 40px rgba(0,0,0,0.3);
+        animation: slideUp 0.32s cubic-bezier(0.4,0,0.2,1);
     }
 
-    .sidebar.practice-mode header {
-        display: none;
+    @keyframes slideUp {
+        from { transform: translateY(100%); }
+        to   { transform: translateY(0); }
     }
-    
+
+    .mim-handle {
+        width: 44px;
+        height: 5px;
+        background: #e2d1bc;
+        border-radius: 10px;
+        margin: 14px auto 0;
+        flex-shrink: 0;
+    }
+
+    .mim-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 0.8rem 0.5rem;
+        font-weight: 800;
+        font-size: 1.05rem;
+        color: #fff;
+        border-radius: 12px;
+        flex-shrink: 0;
+    }
+
+    .mim-body {
+        display: flex;
+        flex-direction: column;
+        gap: 0.9rem;
+        flex: 1;
+    }
+
+    .mim-close {
+        background: #e9e0d1;
+        border: none;
+        color: #5d4037;
+        font-weight: 700;
+        font-size: 1rem;
+        padding: 0.8rem;
+        border-radius: 12px;
+        cursor: pointer;
+        font-family: inherit;
+        flex-shrink: 0;
+    }
+
+    /* Practice mode tweaks */
+    .sidebar.practice-mode header { display: none; }
+
     .sidebar.practice-mode .sidebar-content {
         padding: 0.8rem;
         padding-top: 0.5rem;
@@ -716,7 +739,7 @@ h1, h2, h3 {
     .sidebar.practice-mode .sidebar-content .instruction {
         display: none;
     }
-    
+
     .sidebar.practice-mode .term-list {
         grid-template-columns: 1fr 1fr;
         gap: 8px;
@@ -734,9 +757,7 @@ h1, h2, h3 {
         text-align: center;
     }
 
-    .number-selector {
-        gap: 5px;
-    }
+    .number-selector { gap: 5px; }
 
     .num-btn {
         width: 38px;
@@ -750,7 +771,7 @@ h1, h2, h3 {
         font-size: 0.9rem;
     }
 
-    .map-context-panel {
-        margin-top: 1rem;
+    .sidebar-copyright {
+        display: none; /* shown in map overlay area on mobile instead */
     }
 }

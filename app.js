@@ -18,7 +18,7 @@ const ui = {};
 
 function init() {
     ui.mapList         = document.getElementById('map-list');
-    ui.mapTitle        = document.getElementById('map-title-text') || document.querySelector('.map-title-overlay');
+    ui.mapTitle        = document.querySelector('.map-title-overlay');
     ui.panelLearn      = document.getElementById('panel-explore');
     ui.panelPractice   = document.getElementById('panel-practice');
     ui.panelEditor     = document.getElementById('editor-panel');
@@ -1060,17 +1060,12 @@ const MAP_CONTEXTS = {
         color: '#795548',
         emoji: '👑',
         title: 'תחום השליטה של ממלכת שלמה',
-        chapters: ['מלכים א ה\' א-ה', 'מלכים א ח\' סה', 'מלכים א ד\' כ'],
-        summary: 'שימו לב לבידול בין המושגים "תחום השליטה וההשפעה" מול "גבולות ההתיישבות".\n' + 
-                 'על פי הכתוב, הגיעו גבולות ההתיישבות של עם ישראל "מדן ועד באר שבע" כיאות לתקופת השיא של הממלכה. דן מסמלת את נקודת היישוב הצפונית, ובאר שבע את הדרומית לפני המדבר. הביטוי מופיע גם בספר שמואל.\n\n' +
-                 'תחום השליטה וההשפעה הרחב של שלמה מסומן במפה. על פי הכתוב כל הממלכות מעברו המערבי של נהר פרת שילמו לשלמה מס ומנחה.\n\n' +
-                 'בתיאור ימי מלכות שלמה שזורים ביטויים המלמדים שמדובר בימי השיא של הממלכה ("יהודה וישראל רבים כחול...").',
+        chapters: ['מלכים א ה\' א–ה', 'מלכים א ח\' סה'],
+        summary: 'ממלכת שלמה הגיעה לשיא גדולתה, משתרעת מנהר פרת בצפון-מזרח ועד נחל מצרים בדרום-מערב. כל ממלכות עבר הנהר המערבי שילמו מנחה לשלמה. יש להבדיל בין גבולות ההתיישבות ("מדן ועד באר שבע") לבין גבולות השליטה הרחבים יותר.',
         verses: [
-            { text: 'וּשְׁלֹמֹה הָיָה מֹושֵׁל בְּכָל הַמַּמְלָכוֹת מִן הַנָּהָר אֶרֶץ פְּלִשְׁתִּים וְעַד גְּבוּל מִצְרָיִם מַגִּישִׁים מִנְחָה וְעֹבְדִים אֶת שְׁלֹמֹה כָּל יְמֵי חַיָּיו', ref: 'מלכים א ה\', א' },
-            { text: 'כִּי הוּא רֹדֶה בְּכָל עֵבֶר הַנָּהָר מִתִּפְסַח וְעַד עַזָּה בְּכָל מַלְכֵי עֵבֶר הַנָּהָר וְשָׁלוֹם הָיָה לוֹ מִכָּל עֲבָרָיו מִסָּבִיב', ref: 'מלכים א ה\', ד' },
-            { text: 'וַיֵּשֶׁב יְהוּדָה וְיִשְׂרָאֵל לָבֶטַח אִישׁ תַּחַת גַּפְנוֹ וְתַחַת תְּאֵנָתוֹ מִדָּן וְעַד בְּאֵר שָׁבַע כֹּל יְמֵי שְׁלֹמֹה', ref: 'מלכים א ה\', ה' },
-            { text: 'וַיַּעַשׂ שְׁלֹמֹה בָעֵת הַהִיא אֶת הֶחָג וְכָל יִשְׂרָאֵל עִמּוֹ קָהָל גָּדוֹל מִלְּבוֹא חֲמָת עַד נַחַל מִצְרַיִם', ref: 'מלכים א ח\', סה' },
-            { text: 'יְהוּדָה וְיִשְׂרָאֵל רַבִּים כַּחוֹל אֲשֶׁר עַל הַיָּם לָרֹב אֹכְלִים וְשֹׁתִים וּשְׂמֵחִים', ref: 'מלכים א ד\', כ' }
+            { text: 'וּשְׁלֹמֹה הָיָה מֹושֵׁל בְּכָל הַמַּמְלָכוֹת מִן הַנָּהָר אֶרֶץ פְּלִשְׁתִּים וְעַד גְּבוּל מִצְרָיִם', ref: 'מלכים א ה\', א' },
+            { text: 'כִּי הוּא רֹדֶה בְּכָל עֵבֶר הַנָּהָר מִתִּפְסַח וְעַד עַזָּה', ref: 'מלכים א ה\', ד' },
+            { text: 'וַיֵּשֶׁב יְהוּדָה וְיִשְׂרָאֵל לָבֶטַח אִישׁ תַּחַת גַּפְנוֹ וְתַחַת תְּאֵנָתוֹ מִדָּן וְעַד בְּאֵר שָׁבַע כֹּל יְמֵי שְׁלֹמֹה', ref: 'מלכים א ה\', ה' }
         ]
     },
     2: {
@@ -1252,103 +1247,112 @@ const MAP_CONTEXTS = {
 };
 
 function renderMapContext(mapObj) {
-    let container = document.getElementById('floating-context-panel');
-    let mobileBtn = document.getElementById('mobile-info-btn');
-
-    if (!container) return;
-    
-    container.innerHTML = '';
-    // reset mobile open state when new map loads
-    container.classList.remove('mobile-open');
-
     const ctx = MAP_CONTEXTS[mapObj.id];
+    const isMobile = window.innerWidth <= 768;
+
+    const overlay   = document.getElementById('map-info-overlay');
+    const mioEmoji  = document.getElementById('mio-emoji');
+    const mioTitle  = document.getElementById('mio-title');
+    const mioHeader = document.getElementById('mio-header');
+    const mioBody   = document.getElementById('mio-body');
+    const infoBtn   = document.getElementById('map-info-btn');
+    const mimHeader = document.getElementById('mim-header');
+    const mimBody   = document.getElementById('mim-body');
+
+    // Hide everything when no context for this map
     if (!ctx) {
-        container.classList.add('hidden');
-        if (mobileBtn) mobileBtn.classList.add('hidden');
+        if (overlay)  overlay.classList.add('hidden');
+        if (infoBtn)  infoBtn.classList.add('hidden');
         return;
     }
 
-    container.classList.remove('hidden');
-    if (mobileBtn) {
-        mobileBtn.classList.remove('hidden');
-        mobileBtn.style.backgroundColor = ctx.color;
-    }
+    // Build shared body HTML into a given element
+    function buildBodyContent(targetEl) {
+        targetEl.innerHTML = '';
 
-    const panel = document.createElement('div');
-    panel.className = 'map-context-panel';
-
-    // Header (click to minimize/close)
-    const header = document.createElement('div');
-    header.className = 'map-context-header';
-    header.style.background = `linear-gradient(135deg, ${ctx.color}f0, ${ctx.color}c0)`;
-    header.innerHTML = `
-        <span style="font-size:1.4rem">${ctx.emoji}</span>
-        <span>${ctx.title}</span>
-        <span class="ctx-arrow">▼</span>
-    `;
-    
-    // Toggle minimized/open state
-    header.onclick = () => {
-        panel.classList.toggle('collapsed');
-        // If entirely on mobile, toggle the container mobile-open class so it behaves like closing
-        if (window.innerWidth <= 768) {
-            container.classList.remove('mobile-open');
+        if (ctx.chapters && ctx.chapters.length) {
+            const chapDiv = document.createElement('div');
+            chapDiv.className = 'ctx-chapters';
+            ctx.chapters.forEach(ch => {
+                const tag = document.createElement('span');
+                tag.className = 'ctx-chapter-tag';
+                tag.style.background = `${ctx.color}18`;
+                tag.style.color = ctx.color;
+                tag.textContent = '\uD83D\uDCD6 ' + ch;
+                chapDiv.appendChild(tag);
+            });
+            targetEl.appendChild(chapDiv);
         }
-    };
-    panel.appendChild(header);
 
-    // Body
-    const body = document.createElement('div');
-    body.className = 'map-context-body';
+        if (ctx.summary) {
+            const sum = document.createElement('p');
+            sum.className = 'ctx-summary';
+            sum.textContent = ctx.summary;
+            targetEl.appendChild(sum);
+        }
 
-    // Chapters
-    if (ctx.chapters && ctx.chapters.length) {
-        const chapDiv = document.createElement('div');
-        chapDiv.className = 'ctx-chapters';
-        ctx.chapters.forEach(ch => {
-            const tag = document.createElement('span');
-            tag.className = 'ctx-chapter-tag';
-            tag.style.background = `${ctx.color}18`;
-            tag.style.color = ctx.color;
-            tag.textContent = '📖 ' + ch;
-            chapDiv.appendChild(tag);
-        });
-        body.appendChild(chapDiv);
+        if (ctx.verses && ctx.verses.length) {
+            ctx.verses.forEach(v => {
+                const vEl = document.createElement('div');
+                vEl.className = 'ctx-verse';
+                vEl.style.borderColor = ctx.color;
+                vEl.innerHTML = `"${v.text}"<cite>${v.ref}</cite>`;
+                targetEl.appendChild(vEl);
+            });
+        }
     }
 
-    // Summary
-    if (ctx.summary) {
-        const sum = document.createElement('p');
-        sum.className = 'ctx-summary';
-        sum.textContent = ctx.summary;
-        body.appendChild(sum);
-    }
+    if (!isMobile) {
+        // Desktop: populate the floating overlay (bottom-left of map)
+        if (mioEmoji) mioEmoji.textContent = ctx.emoji;
+        if (mioTitle) mioTitle.textContent = ctx.title;
+        if (mioHeader) mioHeader.style.background = `linear-gradient(135deg, ${ctx.color}ee, ${ctx.color}bb)`;
+        if (mioBody)  buildBodyContent(mioBody);
 
-    // Verses
-    if (ctx.verses && ctx.verses.length) {
-        ctx.verses.forEach(v => {
-            const vEl = document.createElement('div');
-            vEl.className = 'ctx-verse';
-            vEl.style.borderColor = ctx.color;
-            vEl.innerHTML = `"${v.text}"<cite>${v.ref}</cite>`;
-            body.appendChild(vEl);
-        });
+        // Restore minimized state on each new map
+        _overlayMinimized = false;
+        const minBtn = document.getElementById('mio-minimize');
+        if (minBtn) { minBtn.textContent = '\u2013'; minBtn.title = 'מזעור'; }
+        if (overlay) { overlay.classList.remove('hidden', 'minimized'); overlay.style.maxHeight = ''; }
+    } else {
+        // Mobile: populate modal & show ! button
+        if (mimHeader) {
+            mimHeader.style.background = `linear-gradient(135deg, ${ctx.color}ee, ${ctx.color}bb)`;
+            mimHeader.innerHTML = `<span style="font-size:1.4rem">${ctx.emoji}</span>&nbsp;<span>${ctx.title}</span>`;
+        }
+        if (mimBody) buildBodyContent(mimBody);
+        if (infoBtn) infoBtn.classList.remove('hidden');
     }
-
-    panel.appendChild(body);
-    container.appendChild(panel);
 }
 
-function toggleMobileContext() {
-    const container = document.getElementById('floating-context-panel');
-    if (container) {
-        container.classList.toggle('mobile-open');
-        // Ensure panel itself isn't collapsed when opened via mobile trigger
-        const panel = container.querySelector('.map-context-panel');
-        if (panel) {
-            panel.classList.remove('collapsed');
-        }
+// ---- Desktop overlay minimize / restore ----
+let _overlayMinimized = false;
+function toggleMapInfoOverlay() {
+    const overlay = document.getElementById('map-info-overlay');
+    const btn     = document.getElementById('mio-minimize');
+    if (!overlay) return;
+    _overlayMinimized = !_overlayMinimized;
+    if (_overlayMinimized) {
+        const headerH = document.getElementById('mio-header').offsetHeight;
+        overlay.style.maxHeight = headerH + 'px';
+        overlay.classList.add('minimized');
+        if (btn) { btn.textContent = '+'; btn.title = 'הצג'; }
+    } else {
+        overlay.style.maxHeight = '';
+        overlay.classList.remove('minimized');
+        if (btn) { btn.textContent = '\u2013'; btn.title = 'מזעור'; }
     }
+}
+
+// ---- Mobile modal open / close ----
+function openMapInfoModal() {
+    const modal = document.getElementById('map-info-modal');
+    if (modal) modal.classList.remove('hidden');
+}
+
+function closeMapInfoModal() {
+    const modal = document.getElementById('map-info-modal');
+    if (modal) modal.classList.add('hidden');
 }
 
 document.addEventListener('DOMContentLoaded', init);

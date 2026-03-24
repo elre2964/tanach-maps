@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>תרגול מפות בספר מלכים </title>
+    <title>מפות מלכים א–ב | שאלון 2551</title>
     <!-- Fonts -->
     <link
         href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700&family=Frank+Ruhl+Libre:wght@500;700;900&display=swap"
@@ -22,9 +22,8 @@
     <div class="app-container">
         <!-- Sidebar -->
         <aside class="sidebar" id="sidebar">
-            <!-- Fixed Header/Drag Handle -->
-            <div class="sidebar-header">
-                <button class="quick-40-btn" onclick="sidebarTo40()">40%</button>
+            <!-- Mobile-only drag handle -->
+            <div class="sidebar-header" id="sidebar-header">
                 <div class="sidebar-drag-handle" id="sidebar-drag-handle"></div>
                 <button class="toggle-sidebar" id="toggle-sidebar" onclick="toggleSidebar()">
                     <span class="handle-bar"></span>
@@ -35,8 +34,8 @@
             <!-- Scrollable Content -->
             <div class="sidebar-content">
                 <header>
-                    <h1>תרגול מפות - מלכים</h1>
-                    <p class="subtitle">על גבי מפה תלת-ממדית אינטראקטיבית</p>
+                    <h1>מפות מלכים א–ב</h1>
+                    <p class="subtitle">תואם למפות לבגרות שאלון 2551</p>
                 </header>
 
                 <div class="mode-tabs">
@@ -129,19 +128,43 @@
                     </div>
                 </div>
 
-                <footer>
-                    <p>מפות אינטראקטיביות להמחשת הלימוד</p>
-                </footer>
+                <!-- Copyright -->
+                <div class="sidebar-copyright">
+                    <span>© אלעד סימן טוב</span>
+                </div>
             </div>
         </aside>
 
         <!-- Main Map Area -->
         <main class="map-container">
-            <div id="map-ui-overlay" class="map-title-overlay">
-                <span id="map-title-text">בחר מפה כדי להתחיל</span>
-                <button id="mobile-info-btn" class="mobile-info-btn hidden" onclick="toggleMobileContext()">❕</button>
+            <div id="map-ui-overlay" class="map-title-overlay">בחר מפה כדי להתחיל</div>
+
+            <!-- Mobile info button (! icon, shown only when map has context) -->
+            <button id="map-info-btn" class="map-info-btn hidden" onclick="openMapInfoModal()" title="מידע על המפה">
+                <span>!</span>
+            </button>
+
+            <!-- Desktop info overlay (bottom-left of map) -->
+            <div id="map-info-overlay" class="map-info-overlay hidden">
+                <div class="mio-header" id="mio-header">
+                    <span class="mio-emoji" id="mio-emoji"></span>
+                    <span class="mio-title" id="mio-title"></span>
+                    <button class="mio-minimize" id="mio-minimize" onclick="toggleMapInfoOverlay()" title="מזעור">–</button>
+                </div>
+                <div class="mio-body" id="mio-body"></div>
             </div>
-            <div id="floating-context-panel" class="floating-context-container hidden"></div>
+
+            <!-- Mobile info modal -->
+            <div id="map-info-modal" class="map-info-modal hidden">
+                <div class="mim-backdrop" onclick="closeMapInfoModal()"></div>
+                <div class="mim-sheet">
+                    <div class="mim-handle"></div>
+                    <div class="mim-header" id="mim-header"></div>
+                    <div class="mim-body" id="mim-body"></div>
+                    <button class="mim-close" onclick="closeMapInfoModal()">סגור ✕</button>
+                </div>
+            </div>
+
             <div id="map" dir="ltr"></div> <!-- Leaflet Map Container MUST be ltr -->
         </main>
     </div>
@@ -150,7 +173,6 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
-    <!-- Plugins -->
     <!-- Arc.js for curved lines -->
     <script src="https://api.mapbox.com/mapbox.js/plugins/arc.js/v0.1.0/arc.js"></script>
 
