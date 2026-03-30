@@ -323,6 +323,27 @@ h1, h2, h3 {
     justify-content: center;
 }
 
+/* River labels */
+.custom-river-label {
+    background: transparent;
+    border: none;
+    pointer-events: none;
+}
+
+.river-label-text {
+    white-space: nowrap;
+    font-family: 'Assistant', sans-serif;
+    font-weight: 800;
+    color: #2980b9;
+    font-style: italic;
+    font-size: 0.85rem;
+    text-shadow: 
+        0 0 5px white,
+        0 0 8px white,
+        0 0 12px white;
+    text-align: center;
+}
+
 /* =========================================
    City Markers & Zoom Scaling
 ========================================= */

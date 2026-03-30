@@ -325,10 +325,43 @@ const MAP_DATA = {
     },
 
     rivers: {
-        "tigris": [[38.814, 41.4624], [30.3824, 49.1418]],
-        "euphrates": [[38.3158, 38.9575], [29.4874, 48.0103]],
-        "jorden": [[32.7027, 35.5978], [31.7679, 35.5518]],
-        "cherith": [[32.3823, 35.5682], [32.3927, 35.8168]]
+        "tigris": [
+            [38.814, 41.4624],
+            [37.3003, 42.6599],
+            [36.3594, 43.5059],
+            [35.1648, 44.231],
+            [34.2799, 44.4177],
+            [33.8704, 45.2417],
+            [32.8888, 45.9888],
+            [30.3824, 49.1418]
+        ],
+        "euphrates": [
+            [38.3158, 38.9575],
+            [37.0902, 38.8916],
+            [36.324, 38.8586],
+            [36.0136, 40.3638],
+            [34.8499, 41.1108],
+            [34.6242, 42.2864],
+            [33.3856, 43.4399],
+            [32.482, 45.3186],
+            [29.4874, 48.0103]
+        ],
+        "jorden": [
+            [32.7027, 35.5978],
+            [32.5428, 35.5744],
+            [32.3933, 35.5682],
+            [32.1814, 35.5902],
+            [32.0133, 35.5737],
+            [31.8706, 35.5607],
+            [31.7679, 35.5518]
+
+
+        ],
+        "cherith": [
+            [32.3823, 35.5682],
+            [32.4055, 35.7138],
+            [32.3927, 35.8168]
+        ]
     },
 
     bounds: {
@@ -455,13 +488,31 @@ const MAP_DATA = {
             practicePlaces: ["פנואל", "תרצה", "שומרון", "שכם"]
         },
         {
+            id: 9,
+            title: "מפה 9: אליהו בזמן הבצורת",
+            bounds: "israel",
+            places: ["הר הכרמל", "צרפת"],
+            fadedPlaces: [],
+            regions: [],
+            features: [
+                { type: "polygon", id: "israel_extended", color: "#27ae60", dashArray: "5, 5" },
+                { type: "riverlabel", text: "נחל כרית", pos: [32.410, 35.749] },
+                { type: "river", id: "jorden" },
+                { type: "river", id: "cherith" }
+
+            ],
+            practicePlaces: ["נחל כרית", "צרפת"]
+        },
+        {
             id: 10,
             title: "מפה 10: מעמד הר הכרמל",
             bounds: "israel",
             places: ["הר הכרמל", "יזרעאל", "שומרון"],
             regions: [],
             features: [
-                { type: "polygon", id: "israel_extended", color: "#27ae60", dashArray: "5, 5" }
+                { type: "polygon", id: "israel_extended", color: "#27ae60", dashArray: "5, 5" },
+                { type: "river", id: "jorden" }
+
             ],
             practicePlaces: ["הר הכרמל", "יזרעאל", "שומרון"]
         },
@@ -473,7 +524,10 @@ const MAP_DATA = {
             regions: [],
             features: [
                 { type: "textlabel", text: "הגלעד", pos: [32.40, 35.80] },
-                { type: "icon", icon: "⛰️", pos: [28.540, 33.970], label: "הר חורב" }
+                { type: "icon", icon: "⛰️", pos: [28.540, 33.970], label: "הר חורב" },
+                { type: "river", id: "jorden" },
+                { type: "river", id: "cherith" }
+
             ],
             practicePlaces: ["נחל כרית", "צרפת", "הר הכרמל", "יזרעאל", "באר שבע", "בית אל", "גלגל", "יריחו"]
         },
@@ -521,7 +575,12 @@ const MAP_DATA = {
             bounds: "empires",
             places: ["נינוה", "כרכמיש"],
             regions: ["אשור", "בבל", "ישראל", "יהודה", "מצרים"],
-            features: [],
+            features: [
+                { type: "river", id: "euphrates" },
+                { type: "river", id: "tigris" },
+                { type: "riverlabel", text: "נהר פרת", pos: [36.25, 39.4] },
+                { type: "riverlabel", text: "נהר החידקל", pos: [34.3, 44.4] }
+            ],
             practicePlaces: ["אשור"]
         },
         {
@@ -547,7 +606,11 @@ const MAP_DATA = {
                 { "type": "arrow", "start": [32.3244, 35.5899], "end": [35.0712, 40.6678], "color": "#c0392b", "cp": [34.3751, 39.137] },
                 { "type": "arrow", "start": [32.0899, 35.5806], "end": [35.9321, 43.9367], "color": "#c0392b", "cp": [33.5048, 39.4849] },
                 { "type": "arrow", "start": [32.4523, 35.581], "end": [36.8713, 39.9662], "color": "#c0392b", "cp": [35.0048, 37.4159] },
-                { "type": "arrow", "start": [31.9444, 35.5398], "end": [35.6042, 47.1694], "color": "#c0392b", "cp": [32.763, 41.5248] }
+                { "type": "arrow", "start": [31.9444, 35.5398], "end": [35.6042, 47.1694], "color": "#c0392b", "cp": [32.763, 41.5248] },
+                { type: "river", id: "euphrates" },
+                { type: "river", id: "tigris" },
+                { type: "riverlabel", text: "נהר פרת", pos: [36.25, 39.4] },
+                { type: "riverlabel", text: "נהר החידקל", pos: [34.3, 44.4] }
             ],
             practicePlaces: []
         },
@@ -558,7 +621,12 @@ const MAP_DATA = {
             places: ["מגידו"],
             fadedPlaces: ["דמשק", "חצור", "גזר", "ירושלים", "כרכמיש"],
             regions: ["צור", "אשור", "בבל", "מצרים", "יהודה", "ישראל"],
-            features: [],
+            features: [
+                { type: "river", id: "euphrates" },
+                { type: "river", id: "tigris" },
+                { type: "riverlabel", text: "נהר פרת", pos: [36.25, 39.4] },
+                { type: "riverlabel", text: "נהר החידקל", pos: [34.3, 44.4] }
+            ],
             practicePlaces: ["אשור", "בבל", "מצרים", "מגידו"]
         },
         {
@@ -567,7 +635,12 @@ const MAP_DATA = {
             bounds: "empires",
             places: ["רבלה"],
             regions: ["אשור", "יהודה", "מצרים", "האימפריה הבבלית"],
-            features: [],
+            features: [
+                { type: "river", id: "euphrates" },
+                { type: "river", id: "tigris" },
+                { type: "riverlabel", text: "נהר פרת", pos: [36.25, 39.4] },
+                { type: "riverlabel", text: "נהר החידקל", pos: [34.3, 44.4] }
+            ],
             practicePlaces: ["בבל"]
         }
     ]
